@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fotos63 - Marketplace de fotos do Tocantins. Fotógrafos vendem, clientes compram fotos profissionais.">
+    <meta name="keywords" content="fotos, fotografia, Tocantins, marketplace, venda de fotos">
+    <meta name="author" content="MtsFerreira">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fotos63 - Marketplace de Fotos do Tocantins">
+    <meta property="og:description" content="Plataforma onde fotógrafos vendem suas fotos e clientes encontram imagens profissionais.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fotos63.com.br">
+    
+    <title>Fotos63 - Marketplace de Fotos do Tocantins</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            /* Paleta de Cores - Sol do Tocantins */
+            --primary-yellow: #FFD700;
+            --primary-orange: #FF8C00;
+            --light-yellow: #FFF8DC;
+            --dark-orange: #FF6347;
+            --dark-gray: #2C2C2C;
+            --medium-gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+            --black: #000000;
+            
+            /* Gradientes */
+            --gradient-primary: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--primary-orange) 0%, var(--dark-orange) 100%);
+            --gradient-light: linear-gradient(135deg, var(--light-yellow) 0%, var(--white) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--white);
+        }
+        
+        /* Header */
+        .navbar {
+            background: var(--gradient-primary);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 215, 0, 0.95);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--dark-gray) !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-nav .nav-link {
+            color: var(--dark-gray) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: var(--white) !important;
+            transform: translateY(-2px);
+        }
+        
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: var(--white);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-secondary);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+            background: var(--gradient-primary);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary-orange);
+            color: var(--primary-orange);
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--gradient-secondary);
+            border-color: var(--primary-orange);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%23FFD700" stop-opacity="0.1"/><stop offset="100%" stop-color="%23FF8C00" stop-opacity="0.05"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .search-box {
+            background: var(--white);
+            border-radius: 50px;
+            padding: 15px 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .search-box input {
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+        
+        .search-box .btn {
+            border-radius: 50px;
+            padding: 10px 20px;
+        }
+        
+        /* Categories Section */
+        .categories {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: var(--medium-gray);
+        }
+        
+        .category-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .category-card .card-body {
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .category-card h5 {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .category-card p {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .photo-count {
+            background: var(--gradient-primary);
+            color: var(--dark-gray);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        /* Featured Photos */
+        .featured-photos {
+            padding: 80px 0;
+            background: var(--light-gray);
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .photo-item {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .photo-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-item:hover .photo-overlay {
+            opacity: 1;
+        }
+        
+        .photo-info {
+            padding: 1.5rem;
+        }
+        
+        .photo-info h6 {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .photographer-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .photographer-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .photographer-name {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+        
+        .photo-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            background: var(--gradient-primary);
+            color: var(--dark-gray);
+        }
+        
+        .stat-item {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: var(--dark-gray);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark-gray);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer h5 {
+            color: var(--primary-yellow);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .footer a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-yellow);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            text-align: center;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            color: var(--dark-gray);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-nav {
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Utility Classes */
+        .text-gradient {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .bg-gradient-primary {
+            background: var(--gradient-primary);
+        }
+        
+        .bg-gradient-secondary {
+            background: var(--gradient-secondary);
+        }
+        
+        .shadow-custom {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .border-gradient {
+            border: 2px solid transparent;
+            background: linear-gradient(var(--white), var(--white)) padding-box,
+                        var(--gradient-primary) border-box;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <i class="bi bi-camera-fill me-2"></i>Fotos63
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categorias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#featured">Destaques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Preços</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Sobre</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="showLogin()">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                    </button>
+                    <button class="btn btn-primary" onclick="showRegister()">
+                        <i class="bi bi-person-plus me-1"></i>Cadastrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1>Encontre e compre <span class="text-gradient">fotos incríveis</span> do Tocantins</h1>
+                    <p>A maior plataforma de marketplace de fotos do estado. Fotógrafos vendem, clientes compram fotos profissionais com qualidade garantida.</p>
+                    
+                    <div class="search-box d-flex">
+                        <input type="text" placeholder="Pesquise por fotos, eventos, fotógrafos..." id="searchInput">
+                        <button class="btn btn-primary ms-2" onclick="searchPhotos()">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="d-flex gap-3 flex-wrap">
+                        <button class="btn btn-primary btn-lg" onclick="explorePhotos()">
+                            <i class="bi bi-images me-2"></i>Explorar Fotos
+                        </button>
+                        <button class="btn btn-outline-primary btn-lg" onclick="becomePhotographer()">
+                            <i class="bi bi-camera me-2"></i>Seja um Fotógrafo
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="hero-image text-center">
+                        <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Fotografia profissional" 
+                             class="img-fluid rounded-4 shadow-custom"
+                             style="max-height: 500px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="categories">
+        <div class="container">
+            <div class="section-title">
+                <h2>Explore por <span class="text-gradient">Categorias</span></h2>
+                <p>Encontre exatamente o que você procura em nossas categorias especializadas</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-calendar-event category-icon"></i>
+                            <h5>Eventos</h5>
+                            <p>Casamentos, formaturas, aniversários e celebrações especiais</p>
+                            <span class="photo-count">1,234 fotos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-trophy category-icon"></i>
+                            <h5>Esportes</h5>
+                            <p>Futebol, corrida, natação e atividades esportivas</p>
+                            <span class="photo-count">856 fotos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-tree category-icon"></i>
+                            <h5>Natureza</h5>
+                            <p>Paisagens, animais e belezas naturais do Tocantins</p>
+                            <span class="photo-count">2,103 fotos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-person category-icon"></i>
+                            <h5>Retratos</h5>
+                            <p>Ensaios, família e fotografia profissional</p>
+                            <span class="photo-count">743 fotos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-building category-icon"></i>
+                            <h5>Arquitetura</h5>
+                            <p>Edifícios, interiores e fotografia urbana</p>
+                            <span class="photo-count">512 fotos</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="category-card">
+                        <div class="card-body">
+                            <i class="bi bi-palette category-icon"></i>
+                            <h5>Arte</h5>
+                            <p>Fotografia abstrata, conceitual e experimental</p>
+                            <span class="photo-count">389 fotos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Photos -->
+    <section id="featured" class="featured-photos">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fotos em <span class="text-gradient">Destaque</span></h2>
+                <p>Descubra as melhores fotos selecionadas pelos nossos curadores</p>
+            </div>
+            
+            <div class="photo-grid" id="featuredPhotos">
+                <!-- Fotos serão carregadas dinamicamente -->
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paisagem">
+                    <div class="photo-overlay">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-eye me-2"></i>Visualizar
+                        </button>
+                    </div>
+                    <div class="photo-info">
+                        <h6>Pôr do Sol no Jalapão</h6>
+                        <div class="photographer-info">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
+                            <span class="photographer-name">João Silva</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="photo-price">R$ 25,00</span>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Casamento">
+                    <div class="photo-overlay">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-eye me-2"></i>Visualizar
+                        </button>
+                    </div>
+                    <div class="photo-info">
+                        <h6>Casamento na Praia</h6>
+                        <div class="photographer-info">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafa" class="photographer-avatar">
+                            <span class="photographer-name">Maria Santos</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="photo-price">R$ 45,00</span>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="photo-item">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Esporte">
+                    <div class="photo-overlay">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-eye me-2"></i>Visualizar
+                        </button>
+                    </div>
+                    <div class="photo-info">
+                        <h6>Corrida de Rua</h6>
+                        <div class="photographer-info">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
+                            <span class="photographer-name">Carlos Lima</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="photo-price">R$ 30,00</span>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button class="btn btn-primary btn-lg" onclick="loadMorePhotos()">
+                    <i class="bi bi-arrow-down-circle me-2"></i>Ver Mais Fotos
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="5847">0</span>
+                        <span class="stat-label">Fotos Disponíveis</span>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="234">0</span>
+                        <span class="stat-label">Fotógrafos Ativos</span>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="1523">0</span>
+                        <span class="stat-label">Clientes Satisfeitos</span>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="98">0</span>
+                        <span class="stat-label">% Satisfação</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2>Pronto para começar?</h2>
+                    <p>Junte-se à maior comunidade de fotografia do Tocantins. Venda suas fotos ou encontre a imagem perfeita para seu projeto.</p>
+                    
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <button class="btn btn-primary btn-lg" onclick="showRegister('fotografo')">
+                            <i class="bi bi-camera me-2"></i>Quero Vender Fotos
+                        </button>
+                        <button class="btn btn-outline-light btn-lg" onclick="explorePhotos()">
+                            <i class="bi bi-search me-2"></i>Quero Comprar Fotos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5><i class="bi bi-camera-fill me-2"></i>Fotos63</h5>
+                    <p>A maior plataforma de marketplace de fotos do Tocantins. Conectando fotógrafos talentosos com clientes que buscam qualidade.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="#"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Navegação</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#categories">Categorias</a></li>
+                        <li><a href="#featured">Destaques</a></li>
+                        <li><a href="#pricing">Preços</a></li>
+                        <li><a href="#about">Sobre</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Para Fotógrafos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" onclick="showRegister('fotografo')">Cadastre-se</a></li>
+                        <li><a href="#">Como Vender</a></li>
+                        <li><a href="#">Planos</a></li>
+                        <li><a href="#">Comissões</a></li>
+                        <li><a href="#">Suporte</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Para Clientes</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" onclick="explorePhotos()">Explorar</a></li>
+                        <li><a href="#">Como Comprar</a></li>
+                        <li><a href="#">Licenças</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Legal</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Privacidade</a></li>
+                        <li><a href="#">Cookies</a></li>
+                        <li><a href="#">LGPD</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Fotos63. Todos os direitos reservados. | Desenvolvido por <strong>MtsFerreira</strong></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Configuração inicial
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            animateStats();
+            setupScrollEffects();
+        });
+
+        function initializeApp() {
+            console.log('Fotos63 - Inicializando aplicação...');
+            // Aqui seria inicializado o Supabase e outras configurações
+        }
+
+        // Animação dos números das estatísticas
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-count'));
+                        animateNumber(entry.target, target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+
+            stats.forEach(stat => observer.observe(stat));
+        }
+
+        function animateNumber(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 20);
+        }
+
+        // Efeitos de scroll
+        function setupScrollEffects() {
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // Funções de navegação
+        function showLogin() {
+            // Implementar modal de login
+            alert('Modal de login será implementado');
+        }
+
+        function showRegister(type = 'cliente') {
+            // Implementar modal de registro
+            alert(`Modal de registro para ${type} será implementado`);
+        }
+
+        function explorePhotos() {
+            // Navegar para página de exploração
+            alert('Página de exploração será implementada');
+        }
+
+        function becomePhotographer() {
+            showRegister('fotografo');
+        }
+
+        function searchPhotos() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                alert(`Buscar por: ${query}`);
+                // Implementar busca
+            }
+        }
+
+        function loadMorePhotos() {
+            // Carregar mais fotos
+            alert('Carregamento de mais fotos será implementado');
+        }
+
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Busca com Enter
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPhotos();
+            }
+        });
+    </script>
+</body>
+</html>
+

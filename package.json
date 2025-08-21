@@ -1,0 +1,58 @@
+{
+  "name": "fotos63",
+  "version": "1.0.0",
+  "description": "Marketplace de fotos do Tocantins - Plataforma SaaS completa",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -o",
+    "dev": "npx live-server --port=3000 --open=/index.html",
+    "build": "npm run minify-css && npm run minify-js",
+    "minify-css": "npx clean-css-cli -o dist/styles.min.css styles/*.css",
+    "minify-js": "npx terser *.js -o dist/scripts.min.js",
+    "test": "npx playwright test",
+    "lint": "npx eslint *.js",
+    "format": "npx prettier --write *.html *.js *.css",
+    "deploy": "npm run build && npx surge dist/ fotos63.surge.sh"
+  },
+  "keywords": [
+    "marketplace",
+    "fotos",
+    "tocantins",
+    "saas",
+    "photography",
+    "e-commerce"
+  ],
+  "author": "MtsFerreira",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mtsferreira/fotos63.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mtsferreira/fotos63/issues"
+  },
+  "homepage": "https://fotos63.com.br",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "clean-css-cli": "^5.6.2",
+    "eslint": "^8.55.0",
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2",
+    "prettier": "^3.1.0",
+    "surge": "^0.23.1",
+    "terser": "^5.24.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
+
