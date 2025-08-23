@@ -334,7 +334,7 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.html">
                 <i class="bi bi-camera-fill me-2"></i>Fotos63
@@ -356,31 +356,33 @@
                         <a class="nav-link active" href="eventos.html">Eventos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#sobre">Sobre</a>
+                        <a class="nav-link" href="index.html#fotografos">Fotógrafos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#sobre">Sobre</a>
                     </li>
                 </ul>
                 
-                <div class="navbar-nav">
-                    <a class="nav-link" href="#" onclick="showLogin()">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
-                    </a>
-                    <a class="nav-link" href="#" onclick="showRegister()">
-                        <i class="bi bi-person-plus me-1"></i>Cadastrar
-                    </a>
-                    <a class="nav-link" href="#" onclick="showCreateEvent()">
-                        <i class="bi bi-plus-circle me-1"></i>Criar Evento
-                    </a>
+                <div class="d-flex">
+                    <button class="btn btn-outline-primary me-2" onclick="showCreateEvent()">
+                        <i class="bi bi-plus-circle"></i>
+                        Criar Evento
+                    </button>
+                    <button class="btn btn-primary" onclick="showPhotographerRegister()">
+                        <i class="bi bi-camera"></i>
+                        Sou Fotógrafo
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" style="padding-top: 120px;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold mb-3">Eventos Esportivos do Tocantins</h1>
+                    <h1 class="display-4 fw-bold mb-3">Eventos Esportivos</h1>
                     <p class="lead mb-4">Descubra corridas, competições e eventos esportivos incríveis. Participe, organize ou contrate fotógrafos profissionais para registrar seus momentos especiais.</p>
                     <div class="d-flex gap-3 flex-wrap">
                         <a href="#eventos" class="btn btn-light btn-lg">
@@ -392,7 +394,23 @@
                     </div>
                 </div>
                 <div class="col-lg-4 text-center">
-                    <i class="bi bi-trophy" style="font-size: 8rem; opacity: 0.3;"></i>
+                    <!-- Carrossel de fotos de eventos -->
+                    <div id="eventPhotosCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Corrida" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Ciclismo" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Natação" style="height: 300px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -635,51 +653,160 @@
             document.getElementById('loadMoreBtn').style.display = 'block';
         }
 
-        // Mostrar eventos de exemplo
+        // Mostrar eventos de exemplo (baseados no calendário real de Araguaína)
         function showExampleEvents() {
             const exampleEvents = [
                 {
                     id: 1,
-                    titulo: "Corrida do Cerrado 2024",
-                    descricao: "Corrida de 5km e 10km pelas trilhas do cerrado tocantinense. Evento beneficente em prol da preservação ambiental.",
+                    titulo: "Rei e Rainha da Via Lago",
+                    descricao: "Corrida tradicional de Araguaína com percursos de 5km e 10km. Evento que celebra o esporte e a comunidade local.",
                     tipo_evento: "corrida",
-                    localizacao: "Parque Cesamar, Palmas - TO",
-                    endereco_completo: "Parque Cesamar, Quadra 1503 Sul, Palmas - TO",
-                    data_inicio: "2024-03-15T06:00:00-03:00",
-                    data_fim: "2024-03-15T10:00:00-03:00",
+                    localizacao: "Via Lago, Araguaína - TO",
+                    endereco_completo: "Via Lago, Setor Universitário, Araguaína - TO",
+                    data_inicio: "2025-04-20T06:00:00-03:00",
+                    data_fim: "2025-04-20T10:00:00-03:00",
                     horario_largada: "06:30:00",
-                    ponto_encontro: "Entrada principal do Parque Cesamar",
-                    preco_inscricao: 35.00,
-                    capacidade_maxima: 500,
-                    participantes_atuais: 287,
+                    ponto_encontro: "Início da Via Lago",
+                    preco_inscricao: 40.00,
+                    capacidade_maxima: 300,
+                    participantes_atuais: 156,
                     telefone_organizador: "(63) 99999-1234",
-                    email_organizador: "corrida@cerrado.com",
+                    email_organizador: "reiearainha@vialago.com",
                     url_imagem: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    tags: ["corrida", "cerrado", "beneficente", "5km", "10km"],
+                    tags: ["corrida", "araguaina", "via lago", "5km", "10km"],
                     permite_fotografos: true,
-                    preco_cobertura_fotografica: 200.00,
-                    avaliacao_media: 4.8,
-                    total_avaliacoes: 45,
-                    observacoes: "Kit do atleta inclui camiseta, medalha e lanche pós-prova",
-                    usuarios: { nome_completo: "João Silva", email: "joao@eventos.com" }
+                    preco_cobertura_fotografica: 250.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 67,
+                    observacoes: "Kit inclui camiseta, medalha e hidratação",
+                    usuarios: { nome_completo: "Organizadores Via Lago", email: "contato@vialago.com" }
                 },
                 {
                     id: 2,
-                    titulo: "Pedalada do Jalapão",
-                    descricao: "Passeio ciclístico de 30km pelas dunas douradas do Jalapão. Inclui guia especializado e parada para fotos.",
-                    tipo_evento: "ciclismo",
-                    localizacao: "Mateiros - TO",
-                    endereco_completo: "Centro de Mateiros, próximo à entrada do Parque Estadual do Jalapão",
-                    data_inicio: "2024-03-22T07:00:00-03:00",
-                    data_fim: "2024-03-22T12:00:00-03:00",
-                    horario_largada: "07:30:00",
-                    ponto_encontro: "Praça central de Mateiros",
-                    preco_inscricao: 80.00,
-                    capacidade_maxima: 30,
-                    participantes_atuais: 18,
+                    titulo: "Corrida do Trabalhador",
+                    descricao: "Evento em homenagem ao Dia do Trabalhador com percursos de 5km e 10km pelas principais avenidas de Araguaína.",
+                    tipo_evento: "corrida",
+                    localizacao: "Centro, Araguaína - TO",
+                    endereco_completo: "Praça das Bandeiras, Centro, Araguaína - TO",
+                    data_inicio: "2025-05-04T06:00:00-03:00",
+                    data_fim: "2025-05-04T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "Praça das Bandeiras",
+                    preco_inscricao: 35.00,
+                    capacidade_maxima: 400,
+                    participantes_atuais: 198,
                     telefone_organizador: "(63) 99888-5678",
-                    email_organizador: "pedalada@jalapao.com",
-                    url_imagem: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    email_organizador: "corridatrabalhador@araguaina.com",
+                    url_imagem: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "trabalhador", "araguaina", "centro"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 200.00,
+                    avaliacao_media: 4.7,
+                    total_avaliacoes: 89,
+                    observacoes: "Evento beneficente com parte da renda destinada a instituições locais",
+                    usuarios: { nome_completo: "Prefeitura de Araguaína", email: "esportes@araguaina.to.gov.br" }
+                },
+                {
+                    id: 3,
+                    titulo: "Desafio Bravos",
+                    descricao: "Corrida desafiadora com obstáculos naturais e percurso de 10km. Para atletas que buscam superar seus limites.",
+                    tipo_evento: "corrida",
+                    localizacao: "Parque Cimba, Araguaína - TO",
+                    endereco_completo: "Parque Cimba, Setor Cimba, Araguaína - TO",
+                    data_inicio: "2025-05-25T06:00:00-03:00",
+                    data_fim: "2025-05-25T11:00:00-03:00",
+                    horario_largada: "07:00:00",
+                    ponto_encontro: "Entrada do Parque Cimba",
+                    preco_inscricao: 50.00,
+                    capacidade_maxima: 200,
+                    participantes_atuais: 87,
+                    telefone_organizador: "(63) 99777-9012",
+                    email_organizador: "desafio@bravos.com",
+                    url_imagem: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "desafio", "obstaculos", "10km", "bravos"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 300.00,
+                    avaliacao_media: 4.8,
+                    total_avaliacoes: 34,
+                    observacoes: "Recomendado para atletas experientes. Inclui seguro e assistência médica",
+                    usuarios: { nome_completo: "Equipe Bravos", email: "contato@bravos.com" }
+                },
+                {
+                    id: 4,
+                    titulo: "Corrida de Aniversário da Comandante Nildinha",
+                    descricao: "Evento especial em comemoração ao aniversário da Comandante Nildinha, grande incentivadora do esporte local.",
+                    tipo_evento: "corrida",
+                    localizacao: "Araguaína - TO",
+                    endereco_completo: "A definir - Araguaína - TO",
+                    data_inicio: "2025-06-01T06:00:00-03:00",
+                    data_fim: "2025-06-01T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "A definir",
+                    preco_inscricao: 30.00,
+                    capacidade_maxima: 250,
+                    participantes_atuais: 45,
+                    telefone_organizador: "(63) 99666-3456",
+                    email_organizador: "nildinha@corrida.com",
+                    url_imagem: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "aniversario", "nildinha", "comemoracao"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 180.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 12,
+                    observacoes: "Evento comemorativo com festa pós-corrida",
+                    usuarios: { nome_completo: "Comandante Nildinha", email: "nildinha@corrida.com" }
+                },
+                {
+                    id: 5,
+                    titulo: "Stive's Race - 5ª Edição - Etapa Palmas",
+                    descricao: "Quinta edição da tradicional Stive's Race, etapa Palmas. Corrida técnica com percursos desafiadores.",
+                    tipo_evento: "corrida",
+                    localizacao: "Palmas - TO",
+                    endereco_completo: "Parque Cesamar, Palmas - TO",
+                    data_inicio: "2025-06-08T06:00:00-03:00",
+                    data_fim: "2025-06-08T11:00:00-03:00",
+                    horario_largada: "07:00:00",
+                    ponto_encontro: "Parque Cesamar",
+                    preco_inscricao: 60.00,
+                    capacidade_maxima: 500,
+                    participantes_atuais: 234,
+                    telefone_organizador: "(63) 99555-7890",
+                    email_organizador: "stivesrace@palmas.com",
+                    url_imagem: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "stives", "palmas", "5edicao"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 350.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 156,
+                    observacoes: "Evento tradicional com premiação especial",
+                    usuarios: { nome_completo: "Organização Stive's Race", email: "contato@stivesrace.com" }
+                },
+                {
+                    id: 6,
+                    titulo: "Corrida do SESC",
+                    descricao: "Corrida promovida pelo SESC Araguaína com foco na promoção da saúde e bem-estar da comunidade.",
+                    tipo_evento: "corrida",
+                    localizacao: "SESC Araguaína - TO",
+                    endereco_completo: "SESC Araguaína, Setor Couto Magalhães, Araguaína - TO",
+                    data_inicio: "2025-06-22T06:00:00-03:00",
+                    data_fim: "2025-06-22T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "SESC Araguaína",
+                    preco_inscricao: 25.00,
+                    capacidade_maxima: 300,
+                    participantes_atuais: 167,
+                    telefone_organizador: "(63) 99444-2345",
+                    email_organizador: "corrida@sesc-to.com.br",
+                    url_imagem: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "sesc", "saude", "bem-estar"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 150.00,
+                    avaliacao_media: 4.6,
+                    total_avaliacoes: 78,
+                    observacoes: "Inclui avaliação física gratuita e café da manhã",
+                    usuarios: { nome_completo: "SESC Araguaína", email: "araguaina@sesc-to.com.br" }
+                }
+            ];
                     tags: ["ciclismo", "jalapão", "aventura", "dunas", "natureza"],
                     permite_fotografos: true,
                     preco_cobertura_fotografica: 300.00,
