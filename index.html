@@ -676,6 +676,9 @@
             transition: all 0.3s ease;
             margin: 2rem auto;
             max-width: 500px;
+            height: 520px; /* Altura fixa para padronizar todos os cards */
+            display: flex;
+            flex-direction: column;
         }
         
         .photographer-card-carousel:hover {
@@ -718,6 +721,10 @@
         
         .photographer-content {
             padding: 1.5rem 2rem 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .photographer-content h4 {
@@ -1101,9 +1108,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#sobre">Sobre</a>
                         </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Sobre</a>
-                    </li>
                 </ul>
                 
                 <div class="d-flex gap-2">
@@ -1281,7 +1285,7 @@
                             <div class="col-lg-6 col-md-8">
                                 <div class="photographer-card-carousel">
                                     <div class="photographer-header">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                                        <img src="/home/ubuntu/upload/search_images/yziImTVE3tge.jpeg" 
                                              alt="Thayson Ruivo" class="photographer-avatar-large">
                                         <div class="photographer-rating">
                                             <i class="bi bi-star-fill"></i>
@@ -1328,7 +1332,7 @@
                             <div class="col-lg-6 col-md-8">
                                 <div class="photographer-card-carousel">
                                     <div class="photographer-header">
-                                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                                        <img src="/home/ubuntu/upload/search_images/7Q5qkvy7GLYo.jpg" 
                                              alt="Paula Fraga" class="photographer-avatar-large">
                                         <div class="photographer-rating">
                                             <i class="bi bi-star-fill"></i>
@@ -1566,10 +1570,10 @@
     <!-- About Section -->
     <section id="sobre" class="about-section">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="about-content">
-                        <div class="section-title text-start">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="about-content text-center">
+                        <div class="section-title">
                             <h2>Nossa <span class="text-gradient">História</span></h2>
                         </div>
                         <p class="lead">
@@ -1609,16 +1613,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="about-image">
-                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Fotógrafo capturando momento esportivo" class="img-fluid rounded-3 shadow-lg">
-                        <div class="about-badge">
-                            <i class="bi bi-camera-fill"></i>
-                            <span>Capturando<br>Momentos Únicos</span>
                         </div>
                     </div>
                 </div>
