@@ -841,6 +841,51 @@
             transform: scale(1.2);
         }
         
+        /* Controles do Carrossel de Fotos em Destaque */
+        #featuredPhotosCarousel .carousel-control-prev,
+        #featuredPhotosCarousel .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        #featuredPhotosCarousel .carousel-control-prev {
+            left: -25px;
+        }
+        
+        #featuredPhotosCarousel .carousel-control-next {
+            right: -25px;
+        }
+        
+        #featuredPhotosCarousel .carousel-control-prev:hover,
+        #featuredPhotosCarousel .carousel-control-next:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        #featuredPhotosCarousel .carousel-indicators {
+            bottom: -50px;
+        }
+        
+        #featuredPhotosCarousel .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+            opacity: 0.5;
+            border: none;
+        }
+        
+        #featuredPhotosCarousel .carousel-indicators button.active {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
         /* Responsive Design for Photographers */
         @media (max-width: 768px) {
             .photographer-stats {
@@ -1455,72 +1500,112 @@
                 <p>Descubra as melhores fotos selecionadas pelos nossos curadores</p>
             </div>
             
-            <div class="photo-grid" id="featuredPhotos">
-                <!-- Fotos serão carregadas dinamicamente -->
-                <div class="photo-item">
-                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paisagem">
-                    <div class="photo-overlay">
-                        <button class="btn btn-primary">
-                            <i class="bi bi-eye me-2"></i>Visualizar
-                        </button>
-                    </div>
-                    <div class="photo-info">
-                        <h6>Pôr do Sol no Jalapão</h6>
-                        <div class="photographer-info">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
-                            <span class="photographer-name">João Silva</span>
+            <!-- Carrossel de Fotos em Destaque -->
+            <div id="featuredPhotosCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="photo-item">
+                                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paisagem">
+                                    <div class="photo-overlay">
+                                        <button class="btn btn-primary">
+                                            <i class="bi bi-eye me-2"></i>Visualizar
+                                        </button>
+                                    </div>
+                                    <div class="photo-info">
+                                        <h6>Pôr do Sol no Jalapão</h6>
+                                        <div class="photographer-info">
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
+                                            <span class="photographer-name">João Silva</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="photo-price">R$ 25,00</span>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="photo-price">R$ 25,00</span>
-                            <button class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="photo-item">
+                                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Casamento">
+                                    <div class="photo-overlay">
+                                        <button class="btn btn-primary">
+                                            <i class="bi bi-eye me-2"></i>Visualizar
+                                        </button>
+                                    </div>
+                                    <div class="photo-info">
+                                        <h6>Casamento na Praia</h6>
+                                        <div class="photographer-info">
+                                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafa" class="photographer-avatar">
+                                            <span class="photographer-name">Maria Santos</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="photo-price">R$ 45,00</span>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="photo-item">
+                                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Esporte">
+                                    <div class="photo-overlay">
+                                        <button class="btn btn-primary">
+                                            <i class="bi bi-eye me-2"></i>Visualizar
+                                        </button>
+                                    </div>
+                                    <div class="photo-info">
+                                        <h6>Corrida de Rua</h6>
+                                        <div class="photographer-info">
+                                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
+                                            <span class="photographer-name">Carlos Lima</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="photo-price">R$ 30,00</span>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="photo-item">
-                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Casamento">
-                    <div class="photo-overlay">
-                        <button class="btn btn-primary">
-                            <i class="bi bi-eye me-2"></i>Visualizar
-                        </button>
-                    </div>
-                    <div class="photo-info">
-                        <h6>Casamento na Praia</h6>
-                        <div class="photographer-info">
-                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafa" class="photographer-avatar">
-                            <span class="photographer-name">Maria Santos</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="photo-price">R$ 45,00</span>
-                            <button class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <!-- Controles do Carrossel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuredPhotosCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuredPhotosCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
                 
-                <div class="photo-item">
-                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Esporte">
-                    <div class="photo-overlay">
-                        <button class="btn btn-primary">
-                            <i class="bi bi-eye me-2"></i>Visualizar
-                        </button>
-                    </div>
-                    <div class="photo-info">
-                        <h6>Corrida de Rua</h6>
-                        <div class="photographer-info">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Fotógrafo" class="photographer-avatar">
-                            <span class="photographer-name">Carlos Lima</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="photo-price">R$ 30,00</span>
-                            <button class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#featuredPhotosCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#featuredPhotosCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#featuredPhotosCarousel" data-bs-slide-to="2"></button>
                 </div>
             </div>
             
