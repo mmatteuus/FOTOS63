@@ -886,6 +886,240 @@
             transform: scale(1.2);
         }
         
+        /* Controles do Carrossel de Eventos */
+        #upcomingEventsCarousel .carousel-control-prev,
+        #upcomingEventsCarousel .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        #upcomingEventsCarousel .carousel-control-prev {
+            left: -25px;
+        }
+        
+        #upcomingEventsCarousel .carousel-control-next {
+            right: -25px;
+        }
+        
+        #upcomingEventsCarousel .carousel-control-prev:hover,
+        #upcomingEventsCarousel .carousel-control-next:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        #upcomingEventsCarousel .carousel-indicators {
+            bottom: -50px;
+        }
+        
+        #upcomingEventsCarousel .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+            opacity: 0.5;
+            border: none;
+        }
+        
+        #upcomingEventsCarousel .carousel-indicators button.active {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        
+        /* Estilos para Cards de Eventos */
+        .event-card-carousel {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+        
+        .event-card-carousel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .event-header {
+            position: relative;
+            padding: 1.5rem 2rem 1rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .event-date {
+            text-align: center;
+            background: var(--primary-orange);
+            color: var(--white);
+            padding: 0.5rem;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+        
+        .event-date .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .event-date .month {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .event-content {
+            padding: 1.5rem 2rem 2rem;
+        }
+        
+        .event-content h5 {
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .event-description {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .event-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+        
+        .detail-item i {
+            margin-right: 0.5rem;
+            width: 16px;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .event-actions .btn {
+            flex: 1;
+            max-width: 180px;
+            font-size: 0.9rem;
+        }
+        
+        /* Estilos para Imagem Esportiva do Hero */
+        .sports-image-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+        
+        .sports-hero-image {
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 20px !important;
+            transition: all 0.3s ease;
+        }
+        
+        .sports-hero-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
+        }
+        
+        .sports-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        
+        .running-icon, .camera-icon {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .running-icon:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 4s;
+        }
+        
+        .running-icon:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 1s;
+            animation-duration: 3.5s;
+        }
+        
+        .camera-icon {
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 2s;
+            animation-duration: 5s;
+            font-size: 1.8rem;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-10px) rotate(5deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(-5deg);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translateY(-10px) rotate(3deg);
+                opacity: 1;
+            }
+        }
+        
+        /* Animação de pulso para elementos esportivos */
+        @keyframes pulse-sports {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(255, 140, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 140, 0, 0);
+            }
+        }
+        
+        .sports-hero-image {
+            animation: pulse-sports 4s infinite;
+        }
+        
         /* Responsive Design for Photographers */
         @media (max-width: 768px) {
             .photographer-stats {
@@ -1194,10 +1428,16 @@
                 
                 <div class="col-lg-6">
                     <div class="hero-image text-center">
-                         <img src="hero-image.jpg" 
-                             alt="Cachoeira do Tocantins" 
-                             class="img-fluid rounded shadow-lg">-custom"
-                             style="max-height: 500px; object-fit: cover;">
+                        <div class="sports-image-container">
+                            <img src="sports-hero.png" 
+                                 alt="Corrida esportiva - Atletas em ação" 
+                                 class="img-fluid rounded shadow-lg sports-hero-image">
+                            <div class="sports-animation">
+                                <div class="running-icon">🏃‍♂️</div>
+                                <div class="running-icon">🏃‍♀️</div>
+                                <div class="camera-icon">📸</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1246,8 +1486,171 @@
             <!-- Featured Events Carousel -->
             <div class="featured-events mt-5">
                 <h4 class="mb-4">Próximos Eventos</h4>
-                <div class="row" id="featuredEventsContainer">
-                    <!-- Eventos em destaque serão carregados aqui -->
+                
+                <!-- Carrossel de Próximos Eventos -->
+                <div id="upcomingEventsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+                    <div class="carousel-inner">
+                        <!-- Slide 1 - Rei e Rainha da Via Lago -->
+                        <div class="carousel-item active">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 col-md-10">
+                                    <div class="event-card-carousel">
+                                        <div class="event-header">
+                                            <div class="event-date">
+                                                <span class="day">25</span>
+                                                <span class="month">MAI</span>
+                                            </div>
+                                            <div class="event-status">
+                                                <span class="badge bg-success">Inscrições Abertas</span>
+                                            </div>
+                                        </div>
+                                        <div class="event-content">
+                                            <h5>🏃‍♂️ Rei e Rainha da Via Lago</h5>
+                                            <p class="event-description">
+                                                Corrida tradicional de Araguaína com percursos de 5km e 10km. 
+                                                Evento familiar com premiação especial e medalhas personalizadas.
+                                            </p>
+                                            <div class="event-details">
+                                                <div class="detail-item">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span>Via Lago, Araguaína - TO</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-clock text-primary"></i>
+                                                    <span>06:00 - Largada</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-people text-primary"></i>
+                                                    <span>150+ participantes esperados</span>
+                                                </div>
+                                            </div>
+                                            <div class="event-actions">
+                                                <button class="btn btn-primary">
+                                                    <i class="bi bi-calendar-plus me-1"></i>Participar
+                                                </button>
+                                                <button class="btn btn-outline-primary">
+                                                    <i class="bi bi-camera me-1"></i>Contratar Fotógrafo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 2 - Corrida do Trabalhador -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 col-md-10">
+                                    <div class="event-card-carousel">
+                                        <div class="event-header">
+                                            <div class="event-date">
+                                                <span class="day">01</span>
+                                                <span class="month">JUN</span>
+                                            </div>
+                                            <div class="event-status">
+                                                <span class="badge bg-warning">Últimas Vagas</span>
+                                            </div>
+                                        </div>
+                                        <div class="event-content">
+                                            <h5>🏃‍♀️ Corrida do Trabalhador</h5>
+                                            <p class="event-description">
+                                                Homenagem aos trabalhadores com corrida de 5km e caminhada de 3km. 
+                                                Evento gratuito com café da manhã e sorteio de brindes.
+                                            </p>
+                                            <div class="event-details">
+                                                <div class="detail-item">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span>Centro de Araguaína - TO</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-clock text-primary"></i>
+                                                    <span>06:30 - Largada</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-people text-primary"></i>
+                                                    <span>200+ participantes esperados</span>
+                                                </div>
+                                            </div>
+                                            <div class="event-actions">
+                                                <button class="btn btn-primary">
+                                                    <i class="bi bi-calendar-plus me-1"></i>Participar
+                                                </button>
+                                                <button class="btn btn-outline-primary">
+                                                    <i class="bi bi-camera me-1"></i>Contratar Fotógrafo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 3 - Stive's Race -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8 col-md-10">
+                                    <div class="event-card-carousel">
+                                        <div class="event-header">
+                                            <div class="event-date">
+                                                <span class="day">08</span>
+                                                <span class="month">JUN</span>
+                                            </div>
+                                            <div class="event-status">
+                                                <span class="badge bg-info">Em Breve</span>
+                                            </div>
+                                        </div>
+                                        <div class="event-content">
+                                            <h5>🏁 Stive's Race - Etapa Palmas</h5>
+                                            <p class="event-description">
+                                                Corrida de obstáculos e aventura com percursos desafiadores. 
+                                                Modalidades: 5km, 10km e 21km com obstáculos naturais e artificiais.
+                                            </p>
+                                            <div class="event-details">
+                                                <div class="detail-item">
+                                                    <i class="bi bi-geo-alt text-primary"></i>
+                                                    <span>Palmas - TO</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-clock text-primary"></i>
+                                                    <span>07:00 - Largada</span>
+                                                </div>
+                                                <div class="detail-item">
+                                                    <i class="bi bi-people text-primary"></i>
+                                                    <span>300+ participantes esperados</span>
+                                                </div>
+                                            </div>
+                                            <div class="event-actions">
+                                                <button class="btn btn-primary">
+                                                    <i class="bi bi-calendar-plus me-1"></i>Participar
+                                                </button>
+                                                <button class="btn btn-outline-primary">
+                                                    <i class="bi bi-camera me-1"></i>Contratar Fotógrafo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controles do Carrossel -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#upcomingEventsCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#upcomingEventsCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                    
+                    <!-- Indicadores -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#upcomingEventsCarousel" data-bs-slide-to="0" class="active"></button>
+                        <button type="button" data-bs-target="#upcomingEventsCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#upcomingEventsCarousel" data-bs-slide-to="2"></button>
+                    </div>
                 </div>
             </div>
             
