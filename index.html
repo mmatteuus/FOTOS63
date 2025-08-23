@@ -15,6 +15,10 @@
     
     <title>Fotos63 - Marketplace de Fotos do Tocantins</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -663,6 +667,22 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
+        /* Estilos para o Carrossel de Fotógrafos */
+        .photographer-card-carousel {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+        
+        .photographer-card-carousel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
         .photographer-header {
             position: relative;
             padding: 2rem 2rem 1rem;
@@ -671,8 +691,8 @@
         }
         
         .photographer-avatar-large {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid var(--white);
@@ -700,6 +720,14 @@
             padding: 1.5rem 2rem 2rem;
         }
         
+        .photographer-content h4 {
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
         .photographer-content h5 {
             font-weight: 700;
             color: var(--dark-gray);
@@ -712,6 +740,7 @@
             font-weight: 500;
             text-align: center;
             margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
         
         .photographer-location {
@@ -756,7 +785,53 @@
         
         .photographer-actions .btn {
             flex: 1;
-            max-width: 120px;
+            max-width: 140px;
+            font-size: 0.9rem;
+        }
+        
+        /* Controles do Carrossel de Fotógrafos */
+        #photographersCarousel .carousel-control-prev,
+        #photographersCarousel .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-orange);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        #photographersCarousel .carousel-control-prev {
+            left: -25px;
+        }
+        
+        #photographersCarousel .carousel-control-next {
+            right: -25px;
+        }
+        
+        #photographersCarousel .carousel-control-prev:hover,
+        #photographersCarousel .carousel-control-next:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        #photographersCarousel .carousel-indicators {
+            bottom: -50px;
+        }
+        
+        #photographersCarousel .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+            opacity: 0.5;
+            border: none;
+        }
+        
+        #photographersCarousel .carousel-indicators button.active {
+            opacity: 1;
+            transform: scale(1.2);
         }
         
         /* Responsive Design for Photographers */
@@ -772,6 +847,15 @@
             
             .photographer-actions .btn {
                 max-width: none;
+            }
+            
+            .photographer-card-carousel {
+                margin: 1rem;
+            }
+            
+            #photographersCarousel .carousel-control-prev,
+            #photographersCarousel .carousel-control-next {
+                display: none;
             }
         }
         
@@ -931,7 +1015,7 @@
                     <div class="events-content">
                         <h3 class="events-title">
                             <i class="bi bi-calendar-event me-2"></i>
-                            Eventos Esportivos do Tocantins
+                            Eventos Esportivos Acontecendo Agora
                         </h3>
                         <p class="events-description">
                             Descubra corridas, competições e eventos esportivos incríveis. 
@@ -955,10 +1039,7 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="events-actions">
-                        <a href="eventos.html" class="btn btn-primary btn-lg mb-3">
-                            <i class="bi bi-eye me-2"></i>Ver Todos os Eventos
-                        </a>
-                        <a href="#" onclick="showCreateEvent()" class="btn btn-outline-primary btn-lg">
+                        <a href="#" onclick="showCreateEvent()" class="btn btn-primary btn-lg mb-3">
                             <i class="bi bi-plus-circle me-2"></i>Criar Evento
                         </a>
                     </div>
@@ -971,6 +1052,12 @@
                 <div class="row" id="featuredEventsContainer">
                     <!-- Eventos em destaque serão carregados aqui -->
                 </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="eventos.html" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-eye me-2"></i>Ver Todos os Eventos
+                </a>
             </div>
         </div>
     </section>
@@ -1027,218 +1114,176 @@
         </div>
     </section>
 
-    <!-- Categories Section -->
-    <section id="categories" class="categories">
-        <div class="container">
-            <div class="section-title">
-                <h2>Explore por <span class="text-gradient">Categorias</span></h2>
-                <p>Encontre exatamente o que você procura em nossas categorias especializadas</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-calendar-event category-icon"></i>
-                            <h5>Eventos</h5>
-                            <p>Casamentos, formaturas, aniversários e celebrações especiais</p>
-                            <span class="photo-count">1,234 fotos</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-trophy category-icon"></i>
-                            <h5>Esportes</h5>
-                            <p>Futebol, corrida, natação e atividades esportivas</p>
-                            <span class="photo-count">856 fotos</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-tree category-icon"></i>
-                            <h5>Natureza</h5>
-                            <p>Paisagens, animais e belezas naturais do Tocantins</p>
-                            <span class="photo-count">2,103 fotos</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-person category-icon"></i>
-                            <h5>Retratos</h5>
-                            <p>Ensaios, família e fotografia profissional</p>
-                            <span class="photo-count">743 fotos</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-building category-icon"></i>
-                            <h5>Arquitetura</h5>
-                            <p>Edifícios, interiores e fotografia urbana</p>
-                            <span class="photo-count">512 fotos</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="category-card">
-                        <div class="card-body">
-                            <i class="bi bi-palette category-icon"></i>
-                            <h5>Arte</h5>
-                            <p>Fotografia abstrata, conceitual e experimental</p>
-                            <span class="photo-count">389 fotos</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Photographers Section -->
+
+    <!-- Photographers Carousel Section -->
     <section id="fotografos" class="photographers-section">
         <div class="container">
             <div class="section-title">
                 <h2>Nossos <span class="text-gradient">Fotógrafos</span></h2>
-                <p>Conheça os profissionais talentosos que fazem parte da nossa comunidade</p>
+                <p>Conheça os profissionais talentosos de Araguaína e região</p>
             </div>
             
-            <div class="row" id="photographersGrid">
-                <!-- Fotógrafos serão carregados dinamicamente -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="photographer-card">
-                        <div class="photographer-header">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
-                                 alt="João Silva" class="photographer-avatar-large">
-                            <div class="photographer-rating">
-                                <i class="bi bi-star-fill"></i>
-                                <span>4.9</span>
+            <!-- Carrossel de Fotógrafos -->
+            <div id="photographersCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-inner">
+                    <!-- Slide 1 - Thayson Ruivo -->
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 col-md-8">
+                                <div class="photographer-card-carousel">
+                                    <div class="photographer-header">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                                             alt="Thayson Ruivo" class="photographer-avatar-large">
+                                        <div class="photographer-rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.9</span>
+                                        </div>
+                                    </div>
+                                    <div class="photographer-content">
+                                        <h4>Thayson Ruivo</h4>
+                                        <p class="photographer-specialty">Turismólogo & Condutor Ambiental | Fotógrafo/Vídeo/Aventureiro</p>
+                                        <p class="photographer-location">
+                                            <i class="bi bi-geo-alt me-1"></i>Araguaína, TO
+                                        </p>
+                                        <div class="photographer-stats">
+                                            <div class="stat">
+                                                <span class="stat-number">234</span>
+                                                <span class="stat-label">Fotos</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">156</span>
+                                                <span class="stat-label">Vendas</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">4.9</span>
+                                                <span class="stat-label">Avaliação</span>
+                                            </div>
+                                        </div>
+                                        <div class="photographer-actions">
+                                            <button class="btn btn-primary">
+                                                <i class="bi bi-eye me-1"></i>Ver Portfólio
+                                            </button>
+                                            <button class="btn btn-outline-primary">
+                                                <i class="bi bi-chat me-1"></i>Contatar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="photographer-content">
-                            <h5>João Silva</h5>
-                            <p class="photographer-specialty">Especialista em Eventos e Natureza</p>
-                            <p class="photographer-location">
-                                <i class="bi bi-geo-alt me-1"></i>Palmas, TO
-                            </p>
-                            <div class="photographer-stats">
-                                <div class="stat">
-                                    <span class="stat-number">156</span>
-                                    <span class="stat-label">Fotos</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">89</span>
-                                    <span class="stat-label">Vendas</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">4.9</span>
-                                    <span class="stat-label">Avaliação</span>
+                    </div>
+                    
+                    <!-- Slide 2 - Paula Fraga -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 col-md-8">
+                                <div class="photographer-card-carousel">
+                                    <div class="photographer-header">
+                                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                                             alt="Paula Fraga" class="photographer-avatar-large">
+                                        <div class="photographer-rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.8</span>
+                                        </div>
+                                    </div>
+                                    <div class="photographer-content">
+                                        <h4>Paula Fraga</h4>
+                                        <p class="photographer-specialty">Fotógrafa | Sublime olhar para tudo que Deus criou</p>
+                                        <p class="photographer-location">
+                                            <i class="bi bi-geo-alt me-1"></i>Araguaína, TO
+                                        </p>
+                                        <div class="photographer-stats">
+                                            <div class="stat">
+                                                <span class="stat-number">189</span>
+                                                <span class="stat-label">Fotos</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">124</span>
+                                                <span class="stat-label">Vendas</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">4.8</span>
+                                                <span class="stat-label">Avaliação</span>
+                                            </div>
+                                        </div>
+                                        <div class="photographer-actions">
+                                            <button class="btn btn-primary">
+                                                <i class="bi bi-eye me-1"></i>Ver Portfólio
+                                            </button>
+                                            <button class="btn btn-outline-primary">
+                                                <i class="bi bi-chat me-1"></i>Contatar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="photographer-actions">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye me-1"></i>Ver Portfólio
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-chat me-1"></i>Contatar
-                                </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 - ML Fotografia -->
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 col-md-8">
+                                <div class="photographer-card-carousel">
+                                    <div class="photographer-header">
+                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
+                                             alt="ML Fotografia" class="photographer-avatar-large">
+                                        <div class="photographer-rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.7</span>
+                                        </div>
+                                    </div>
+                                    <div class="photographer-content">
+                                        <h4>ML Fotografia</h4>
+                                        <p class="photographer-specialty">Fotografia Auxiliar | Eventos e Esportes</p>
+                                        <p class="photographer-location">
+                                            <i class="bi bi-geo-alt me-1"></i>Araguaína, TO
+                                        </p>
+                                        <div class="photographer-stats">
+                                            <div class="stat">
+                                                <span class="stat-number">145</span>
+                                                <span class="stat-label">Fotos</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">89</span>
+                                                <span class="stat-label">Vendas</span>
+                                            </div>
+                                            <div class="stat">
+                                                <span class="stat-number">4.7</span>
+                                                <span class="stat-label">Avaliação</span>
+                                            </div>
+                                        </div>
+                                        <div class="photographer-actions">
+                                            <button class="btn btn-primary">
+                                                <i class="bi bi-eye me-1"></i>Ver Portfólio
+                                            </button>
+                                            <button class="btn btn-outline-primary">
+                                                <i class="bi bi-chat me-1"></i>Contatar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-4 col-md-6">
-                    <div class="photographer-card">
-                        <div class="photographer-header">
-                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Maria Santos" class="photographer-avatar-large">
-                            <div class="photographer-rating">
-                                <i class="bi bi-star-fill"></i>
-                                <span>4.8</span>
-                            </div>
-                        </div>
-                        <div class="photographer-content">
-                            <h5>Maria Santos</h5>
-                            <p class="photographer-specialty">Retratos e Fotografia Social</p>
-                            <p class="photographer-location">
-                                <i class="bi bi-geo-alt me-1"></i>Araguaína, TO
-                            </p>
-                            <div class="photographer-stats">
-                                <div class="stat">
-                                    <span class="stat-number">203</span>
-                                    <span class="stat-label">Fotos</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">124</span>
-                                    <span class="stat-label">Vendas</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">4.8</span>
-                                    <span class="stat-label">Avaliação</span>
-                                </div>
-                            </div>
-                            <div class="photographer-actions">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye me-1"></i>Ver Portfólio
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-chat me-1"></i>Contatar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Controles do Carrossel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#photographersCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#photographersCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
                 
-                <div class="col-lg-4 col-md-6">
-                    <div class="photographer-card">
-                        <div class="photographer-header">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" 
-                                 alt="Carlos Lima" class="photographer-avatar-large">
-                            <div class="photographer-rating">
-                                <i class="bi bi-star-fill"></i>
-                                <span>4.7</span>
-                            </div>
-                        </div>
-                        <div class="photographer-content">
-                            <h5>Carlos Lima</h5>
-                            <p class="photographer-specialty">Esportes e Ação</p>
-                            <p class="photographer-location">
-                                <i class="bi bi-geo-alt me-1"></i>Gurupi, TO
-                            </p>
-                            <div class="photographer-stats">
-                                <div class="stat">
-                                    <span class="stat-number">98</span>
-                                    <span class="stat-label">Fotos</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">67</span>
-                                    <span class="stat-label">Vendas</span>
-                                </div>
-                                <div class="stat">
-                                    <span class="stat-number">4.7</span>
-                                    <span class="stat-label">Avaliação</span>
-                                </div>
-                            </div>
-                            <div class="photographer-actions">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye me-1"></i>Ver Portfólio
-                                </button>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-chat me-1"></i>Contatar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#photographersCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#photographersCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#photographersCarousel" data-bs-slide-to="2"></button>
                 </div>
             </div>
             
@@ -1408,34 +1453,15 @@
                 
                 <div class="col-lg-2 col-md-6 mb-4">
                     <h5>Navegação</h5>
+                  <div class="col-lg-3 col-md-6">
+                    <h5>Links Úteis</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#home">Início</a></li>
-                        <li><a href="#categories">Categorias</a></li>
-                        <li><a href="#featured">Destaques</a></li>
-                        <li><a href="#pricing">Preços</a></li>
-                        <li><a href="#about">Sobre</a></li>
+                        <li><a href="galeria.html">Galeria</a></li>
+                        <li><a href="eventos.html">Eventos</a></li>
+                        <li><a href="#fotografos">Fotógrafos</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
                     </ul>
-                </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h5>Para Fotógrafos</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" onclick="showRegister('fotografo')">Cadastre-se</a></li>
-                        <li><a href="#">Como Vender</a></li>
-                        <li><a href="#">Planos</a></li>
-                        <li><a href="#">Comissões</a></li>
-                        <li><a href="#">Suporte</a></li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-2 col-md-6 mb-4">
-                    <h5>Para Clientes</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" onclick="explorePhotos()">Explorar</a></li>
-                        <li><a href="#">Como Comprar</a></li>
-                        <li><a href="#">Licenças</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contato</a></li>
+                </div>="#">Contato</a></li>
                     </ul>
                 </div>
                 
@@ -1624,17 +1650,16 @@
         // Atualizar UI para usuário não autenticado
         function updateUIForUnauthenticatedUser() {
             const authButtons = document.querySelector('.navbar .d-flex');
-            if (authButtons) {
-                authButtons.innerHTML = `
-                    <button class="btn btn-outline-light me-2" onclick="showLogin()">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Entrar
+            if (authButtons) {                <div class="d-flex">
+                    <button class="btn btn-outline-light me-2" onclick="showCreateEvent()">
+                        <i class="bi bi-plus-circle"></i>
+                        Criar Evento
                     </button>
-                    <button class="btn btn-primary" onclick="showRegister()">
-                        <i class="bi bi-person-plus"></i>
-                        Cadastrar
+                    <button class="btn btn-primary" onclick="showPhotographerRegister()">
+                        <i class="bi bi-camera"></i>
+                        Sou Fotógrafo
                     </button>
-                `;
+                </div>`;
             }
         }
 
