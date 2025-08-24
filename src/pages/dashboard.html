@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Fotos63</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            /* Paleta de Cores - Sol do Tocantins */
+            --primary-yellow: #FFD700;
+            --primary-orange: #FF8C00;
+            --light-yellow: #FFF8DC;
+            --dark-orange: #FF6347;
+            --dark-gray: #2C2C2C;
+            --medium-gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+            --black: #000000;
+            
+            /* Gradientes */
+            --gradient-primary: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-orange) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--primary-orange) 0%, var(--dark-orange) 100%);
+            --gradient-light: linear-gradient(135deg, var(--light-yellow) 0%, var(--white) 100%);
+            
+            /* Sidebar */
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-gray);
+            color: var(--dark-gray);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            background: var(--gradient-primary);
+            color: var(--dark-gray);
+        }
+        
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .sidebar-brand i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .sidebar.collapsed .sidebar-brand span {
+            display: none;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 1.5rem;
+            color: var(--medium-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background: var(--light-yellow);
+            color: var(--dark-gray);
+            border-left-color: var(--primary-orange);
+        }
+        
+        .nav-link.active {
+            background: var(--gradient-light);
+            color: var(--dark-gray);
+            border-left-color: var(--primary-orange);
+            font-weight: 500;
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px 1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .main-content.expanded {
+            margin-left: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--medium-gray);
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            color: var(--primary-orange);
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-btn:hover {
+            color: var(--primary-orange);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--dark-orange);
+            color: var(--white);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu:hover {
+            background: var(--light-gray);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .user-info h6 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .user-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+        }
+        
+        /* Content Area */
+        .content {
+            padding: 2rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .stat-icon.photos {
+            background: var(--gradient-primary);
+        }
+        
+        .stat-icon.sales {
+            background: var(--gradient-secondary);
+        }
+        
+        .stat-icon.views {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .stat-icon.earnings {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .stat-change.positive {
+            color: #28a745;
+        }
+        
+        .stat-change.negative {
+            color: #dc3545;
+        }
+        
+        /* Charts */
+        .chart-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .chart-period {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .period-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--light-gray);
+            background: var(--white);
+            color: var(--medium-gray);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .period-btn.active {
+            background: var(--gradient-primary);
+            border-color: var(--primary-orange);
+            color: var(--dark-gray);
+        }
+        
+        /* Recent Activity */
+        .activity-list {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+        
+        .activity-icon.upload {
+            background: var(--gradient-primary);
+        }
+        
+        .activity-icon.sale {
+            background: var(--gradient-secondary);
+        }
+        
+        .activity-icon.view {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+        }
+        
+        .activity-value {
+            font-weight: 600;
+            color: var(--primary-orange);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .action-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--primary-orange);
+            background: var(--light-yellow);
+            color: var(--dark-gray);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .action-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-orange);
+        }
+        
+        .action-btn h6 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .action-btn p {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+            margin: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,140,0,.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-orange);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--primary-orange);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--light-yellow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background: var(--white);
+            border-color: var(--dark-orange);
+        }
+        
+        .upload-area.dragover {
+            background: var(--gradient-light);
+            border-color: var(--dark-orange);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i class="bi bi-camera-fill"></i>
+                <span>Fotos63</span>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('photos')">
+                    <i class="bi bi-images"></i>
+                    <span>Minhas Fotos</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('upload')">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Upload</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('sales')">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Vendas</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('earnings')">
+                    <i class="bi bi-wallet2"></i>
+                    <span>Ganhos</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('analytics')">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Análises</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('profile')">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('settings')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="index.html" class="nav-link">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            </div>
+            
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                
+                <div class="user-menu" onclick="toggleUserMenu()">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <h6>João Silva</h6>
+                        <p>Fotógrafo</p>
+                    </div>
+                    <i class="bi bi-chevron-down ms-2"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <div id="dashboardSection" class="content-section">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon photos">
+                                <i class="bi bi-images"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">127</div>
+                        <div class="stat-label">Fotos Publicadas</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> +12% este mês
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon sales">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">Vendas Realizadas</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> +8% este mês
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon views">
+                                <i class="bi bi-eye"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">2.4k</div>
+                        <div class="stat-label">Visualizações</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> +15% este mês
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon earnings">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">R$ 2.890</div>
+                        <div class="stat-label">Ganhos Totais</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> +22% este mês
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <a href="#" class="action-btn" onclick="showSection('upload')">
+                        <i class="bi bi-cloud-upload"></i>
+                        <h6>Upload de Fotos</h6>
+                        <p>Adicione novas fotos ao seu portfólio</p>
+                    </a>
+                    
+                    <a href="#" class="action-btn" onclick="showSection('photos')">
+                        <i class="bi bi-images"></i>
+                        <h6>Gerenciar Fotos</h6>
+                        <p>Edite preços e descrições</p>
+                    </a>
+                    
+                    <a href="#" class="action-btn" onclick="showSection('analytics')">
+                        <i class="bi bi-bar-chart"></i>
+                        <h6>Ver Relatórios</h6>
+                        <p>Analise seu desempenho</p>
+                    </a>
+                    
+                    <a href="#" class="action-btn" onclick="showSection('earnings')">
+                        <i class="bi bi-wallet2"></i>
+                        <h6>Sacar Ganhos</h6>
+                        <p>Transfira seus ganhos</p>
+                    </a>
+                </div>
+
+                <div class="row">
+                    <!-- Chart -->
+                    <div class="col-lg-8">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Vendas dos Últimos 30 Dias</h3>
+                                <div class="chart-period">
+                                    <button class="period-btn">7d</button>
+                                    <button class="period-btn active">30d</button>
+                                    <button class="period-btn">90d</button>
+                                </div>
+                            </div>
+                            <canvas id="salesChart" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="col-lg-4">
+                        <div class="activity-list">
+                            <div class="activity-header">
+                                <h3 class="chart-title">Atividade Recente</h3>
+                                <a href="#" class="text-decoration-none">Ver todas</a>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon sale">
+                                    <i class="bi bi-cart-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Foto vendida</div>
+                                    <div class="activity-time">2 horas atrás</div>
+                                </div>
+                                <div class="activity-value">R$ 45,00</div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon upload">
+                                    <i class="bi bi-cloud-upload"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">5 fotos enviadas</div>
+                                    <div class="activity-time">1 dia atrás</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon view">
+                                    <i class="bi bi-eye"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">127 visualizações</div>
+                                    <div class="activity-time">2 dias atrás</div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon sale">
+                                    <i class="bi bi-cart-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Foto vendida</div>
+                                    <div class="activity-time">3 dias atrás</div>
+                                </div>
+                                <div class="activity-value">R$ 30,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="uploadSection" class="content-section" style="display: none;">
+                <div class="upload-area" onclick="triggerFileInput()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <div class="upload-icon">
+                        <i class="bi bi-cloud-upload"></i>
+                    </div>
+                    <div class="upload-text">Arraste suas fotos aqui ou clique para selecionar</div>
+                    <div class="upload-hint">Formatos aceitos: JPG, PNG, WEBP (máx. 10MB cada)</div>
+                    <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                </div>
+                
+                <div id="uploadProgress" style="display: none; margin-top: 2rem;">
+                    <h5>Enviando fotos...</h5>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="uploadStatus"></div>
+                </div>
+            </div>
+
+            <!-- Other sections would be implemented here -->
+            <div id="photosSection" class="content-section" style="display: none;">
+                <h3>Minhas Fotos</h3>
+                <p>Seção de gerenciamento de fotos será implementada aqui.</p>
+            </div>
+
+            <div id="salesSection" class="content-section" style="display: none;">
+                <h3>Vendas</h3>
+                <p>Seção de vendas será implementada aqui.</p>
+            </div>
+
+            <div id="earningsSection" class="content-section" style="display: none;">
+                <h3>Ganhos</h3>
+                <p>Seção de ganhos será implementada aqui.</p>
+            </div>
+
+            <div id="analyticsSection" class="content-section" style="display: none;">
+                <h3>Análises</h3>
+                <p>Seção de análises será implementada aqui.</p>
+            </div>
+
+            <div id="profileSection" class="content-section" style="display: none;">
+                <h3>Perfil</h3>
+                <p>Seção de perfil será implementada aqui.</p>
+            </div>
+
+            <div id="settingsSection" class="content-section" style="display: none;">
+                <h3>Configurações</h3>
+                <p>Seção de configurações será implementada aqui.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
+    <script src="api-functions.js"></script>
+
+    <script>
+        let salesChart;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            createSalesChart();
+        });
+
+        function initializeDashboard() {
+            console.log('Dashboard inicializado');
+            // Aqui seria carregado os dados do usuário via Supabase
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').style.display = 'block';
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'photos': 'Minhas Fotos',
+                'upload': 'Upload de Fotos',
+                'sales': 'Vendas',
+                'earnings': 'Ganhos',
+                'analytics': 'Análises',
+                'profile': 'Perfil',
+                'settings': 'Configurações'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[sectionName];
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+
+        function createSalesChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '5', '10', '15', '20', '25', '30'],
+                    datasets: [{
+                        label: 'Vendas',
+                        data: [12, 19, 8, 15, 25, 22, 30],
+                        borderColor: '#FF8C00',
+                        backgroundColor: 'rgba(255, 140, 0, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Upload functions
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            processFiles(files);
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const uploadArea = event.currentTarget;
+            uploadArea.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            processFiles(files);
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function processFiles(files) {
+            if (files.length === 0) return;
+            
+            const uploadProgress = document.getElementById('uploadProgress');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const progressBar = uploadProgress.querySelector('.progress-bar');
+            
+            uploadProgress.style.display = 'block';
+            uploadStatus.innerHTML = `Preparando upload de ${files.length} arquivo(s)...`;
+            
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    uploadStatus.innerHTML = `✅ ${files.length} foto(s) enviada(s) com sucesso!`;
+                    
+                    setTimeout(() => {
+                        uploadProgress.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                }
+                
+                progressBar.style.width = progress + '%';
+                uploadStatus.innerHTML = `Enviando... ${Math.round(progress)}%`;
+            }, 200);
+        }
+
+        function toggleUserMenu() {
+            // Implementar dropdown do menu do usuário
+            console.log('Toggle user menu');
+        }
+
+        // Responsive sidebar for mobile
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+            }
+        });
+
+        // Mobile sidebar toggle
+        if (window.innerWidth <= 768) {
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('show');
+            }
+        }
+    </script>
+</body>
+</html>
+

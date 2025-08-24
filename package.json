@@ -37,8 +37,13 @@
     "clean-css-cli": "^5.6.2",
     "eslint": "^8.55.0",
     "http-server": "^14.1.1",
+    "imagemin": "^9.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^10.0.0",
+    "imagemin-webp": "^8.0.0",
     "live-server": "^1.2.2",
     "prettier": "^3.1.0",
+    "sharp": "^0.34.3",
     "surge": "^0.23.1",
     "terser": "^5.24.0"
   },
@@ -55,4 +60,3 @@
     "not dead"
   ]
 }
-

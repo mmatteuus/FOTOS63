@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos Esportivos - Fotos63</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary-yellow: #FFD700;
+            --primary-orange: #FF8C00;
+            --gradient-primary: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+            --gradient-secondary: linear-gradient(135deg, #FF8C00 0%, #FFD700 100%);
+            --gradient-light: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
+            --dark-gray: #2C3E50;
+            --medium-gray: #7F8C8D;
+            --light-gray: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #27AE60;
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --info: #3498DB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            background-color: var(--white);
+        }
+
+        /* Header */
+        .navbar {
+            background: var(--gradient-primary);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 215, 0, 0.95);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--dark-gray) !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--dark-gray) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--white) !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: var(--white);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-secondary);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+            background: var(--gradient-primary);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-orange);
+            color: var(--primary-orange);
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--gradient-secondary);
+            border-color: var(--primary-orange);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .hero-section {
+            background: var(--gradient-light);
+            color: var(--dark-gray);
+            padding: 120px 0 80px;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--primary-orange);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-section .lead {
+            font-size: 1.3rem;
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .event-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .event-price {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .event-content {
+            padding: 25px;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .event-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .event-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .event-tag {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .event-capacity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .capacity-bar {
+            width: 100px;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background: var(--success-color);
+            transition: width 0.3s ease;
+        }
+
+        .event-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--warning-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128c7e;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .photographer-offer {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .photographer-offer h6 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .event-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .event-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .category-filter {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-camera-fill me-2"></i>Fotos63
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="galeria.html">Galeria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="eventos.html">Eventos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#fotografos">Fotógrafos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#sobre">Sobre</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex">
+                    <button class="btn btn-outline-primary me-2" onclick="showCreateEvent()">
+                        <i class="bi bi-plus-circle"></i>
+                        Criar Evento
+                    </button>
+                    <button class="btn btn-primary" onclick="showPhotographerRegister()">
+                        <i class="bi bi-camera"></i>
+                        Sou Fotógrafo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" style="padding-top: 120px;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Eventos Esportivos</h1>
+                    <p class="lead mb-4">Descubra corridas, competições e eventos esportivos incríveis. Participe, organize ou contrate fotógrafos profissionais para registrar seus momentos especiais.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#eventos" class="btn btn-light btn-lg">
+                            <i class="bi bi-calendar-event me-2"></i>Ver Eventos
+                        </a>
+                        <a href="#" onclick="showCreateEvent()" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-plus-circle me-2"></i>Criar Evento
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <!-- Carrossel de fotos de eventos -->
+                    <div id="eventPhotosCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Corrida" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Ciclismo" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                                     class="d-block w-100 rounded-3" alt="Natação" style="height: 300px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalEvents">0</div>
+                        <p class="text-muted">Eventos Ativos</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalParticipants">0</div>
+                        <p class="text-muted">Participantes</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalPhotographers">0</div>
+                        <p class="text-muted">Fotógrafos</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <p class="text-muted">Diversão</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5 class="mb-3">Encontre o Evento Perfeito</h5>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-lg" id="searchInput" 
+                               placeholder="Buscar por nome, localização, tipo...">
+                        <button class="btn btn-primary" onclick="searchEvents()">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Ordenar por</h5>
+                    <select class="form-control form-control-lg" id="sortSelect" onchange="sortEvents()">
+                        <option value="date_asc">Data Mais Próxima</option>
+                        <option value="date_desc">Data Mais Distante</option>
+                        <option value="price_asc">Menor Preço</option>
+                        <option value="price_desc">Maior Preço</option>
+                        <option value="rating">Melhor Avaliado</option>
+                        <option value="participants">Mais Participantes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <h6 class="mt-4 mb-3">Filtrar por Categoria</h6>
+            <div class="category-filter" id="categoryFilter">
+                <!-- Categorias serão carregadas aqui -->
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="eventsGrid" class="row" style="display: none;">
+            <!-- Eventos serão carregados aqui -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-primary btn-lg" id="loadMoreBtn" onclick="loadMoreEvents()" style="display: none;">
+                <i class="bi bi-arrow-down-circle me-2"></i>Carregar Mais Eventos
+            </button>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEventTitle">Título do Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <img id="modalEventImage" src="" alt="" class="img-fluid rounded mb-3">
+                            <h6>Descrição</h6>
+                            <p id="modalEventDescription">Descrição do evento...</p>
+                            
+                            <h6>Informações do Evento</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-calendar me-2"></i><strong>Data:</strong> <span id="modalEventDate"></span></li>
+                                        <li><i class="bi bi-clock me-2"></i><strong>Horário:</strong> <span id="modalEventTime"></span></li>
+                                        <li><i class="bi bi-geo-alt me-2"></i><strong>Local:</strong> <span id="modalEventLocation"></span></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-people me-2"></i><strong>Capacidade:</strong> <span id="modalEventCapacity"></span></li>
+                                        <li><i class="bi bi-star me-2"></i><strong>Avaliação:</strong> <span id="modalEventRating"></span></li>
+                                        <li><i class="bi bi-tag me-2"></i><strong>Categoria:</strong> <span id="modalEventCategory"></span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h6>Ponto de Encontro</h6>
+                            <p id="modalEventMeetingPoint">Ponto de encontro...</p>
+                            
+                            <h6>Tags</h6>
+                            <div id="modalEventTags" class="mb-3"></div>
+                            
+                            <div id="modalEventPhotographer" class="photographer-offer" style="display: none;">
+                                <h6><i class="bi bi-camera me-2"></i>Cobertura Fotográfica Disponível</h6>
+                                <p>Este evento oferece serviço de cobertura fotográfica profissional.</p>
+                                <p><strong>Valor:</strong> R$ <span id="modalPhotographyPrice">0,00</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="text-primary mb-3" id="modalEventPrice">R$ 0,00</h4>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small>Vagas ocupadas</small>
+                                            <small><span id="modalCurrentParticipants">0</span>/<span id="modalMaxCapacity">0</span></small>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" id="modalProgressBar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="registerForEvent()">
+                                            <i class="bi bi-person-plus me-2"></i>Inscrever-se
+                                        </button>
+                                        <button class="btn btn-success whatsapp-btn" onclick="contactOrganizer()">
+                                            <i class="bi bi-whatsapp me-2"></i>Contatar Organizador
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="offerPhotography()" id="photographyOfferBtn" style="display: none;">
+                                            <i class="bi bi-camera me-2"></i>Oferecer Fotografia
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-person me-1"></i>Organizador: <span id="modalOrganizerName">Nome</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Fotos63 Eventos</h5>
+                    <p>A maior plataforma de eventos esportivos e fotografia do Tocantins.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Links Úteis</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-light">Início</a></li>
+                        <li><a href="galeria.html" class="text-light">Galeria</a></li>
+                        <li><a href="eventos.html" class="text-light">Eventos</a></li>
+                        <li><a href="#" class="text-light">Criar Evento</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <p class="text-center mb-0">&copy; 2024 Fotos63. Desenvolvido por MtsFerreira</p>
+        </div>
+    </footer>
+
+    <script>
+        // Configuração do Supabase
+        const supabaseUrl = 'https://wecgkxjlqeuhwpznauj.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlY2dreGpscWV1aHdwem5hdWoiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczNDg5NzQ4MSwiZXhwIjoyMDUwNDczNDgxfQ.YBgLlBCLKdHJBfnhqBqZvJNKNjOhCNfGqKBfCJgJJJE';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let allEvents = [];
+        let displayedEvents = [];
+        let categories = [];
+        let currentFilter = '';
+        let currentSearch = '';
+        let currentSort = 'date_asc';
+        let currentEvent = null;
+        let eventsPerPage = 9;
+        let currentPage = 0;
+
+        // Carregar eventos
+        async function loadEvents() {
+            try {
+                const { data: events, error } = await supabase
+                    .from('eventos')
+                    .select(`
+                        *,
+                        usuarios!organizador_id (
+                            nome_completo,
+                            email
+                        )
+                    `)
+                    .eq('status', 'publicado')
+                    .order('data_inicio', { ascending: true });
+
+                if (error) throw error;
+
+                allEvents = events || [];
+                updateStats();
+                applyFiltersAndDisplay();
+            } catch (error) {
+                console.error('Erro ao carregar eventos:', error);
+                showExampleEvents();
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('eventsGrid').style.display = 'block';
+            document.getElementById('loadMoreBtn').style.display = 'block';
+        }
+
+        // Mostrar eventos de exemplo (baseados no calendário real de Araguaína)
+        function showExampleEvents() {
+            const exampleEvents = [
+                {
+                    id: 1,
+                    titulo: "Rei e Rainha da Via Lago",
+                    descricao: "Corrida tradicional de Araguaína com percursos de 5km e 10km. Evento que celebra o esporte e a comunidade local.",
+                    tipo_evento: "corrida",
+                    localizacao: "Via Lago, Araguaína - TO",
+                    endereco_completo: "Via Lago, Setor Universitário, Araguaína - TO",
+                    data_inicio: "2025-04-20T06:00:00-03:00",
+                    data_fim: "2025-04-20T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "Início da Via Lago",
+                    preco_inscricao: 40.00,
+                    capacidade_maxima: 300,
+                    participantes_atuais: 156,
+                    telefone_organizador: "(63) 99999-1234",
+                    email_organizador: "reiearainha@vialago.com",
+                    url_imagem: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "araguaina", "via lago", "5km", "10km"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 250.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 67,
+                    observacoes: "Kit inclui camiseta, medalha e hidratação",
+                    usuarios: { nome_completo: "Organizadores Via Lago", email: "contato@vialago.com" }
+                },
+                {
+                    id: 2,
+                    titulo: "Corrida do Trabalhador",
+                    descricao: "Evento em homenagem ao Dia do Trabalhador com percursos de 5km e 10km pelas principais avenidas de Araguaína.",
+                    tipo_evento: "corrida",
+                    localizacao: "Centro, Araguaína - TO",
+                    endereco_completo: "Praça das Bandeiras, Centro, Araguaína - TO",
+                    data_inicio: "2025-05-04T06:00:00-03:00",
+                    data_fim: "2025-05-04T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "Praça das Bandeiras",
+                    preco_inscricao: 35.00,
+                    capacidade_maxima: 400,
+                    participantes_atuais: 198,
+                    telefone_organizador: "(63) 99888-5678",
+                    email_organizador: "corridatrabalhador@araguaina.com",
+                    url_imagem: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "trabalhador", "araguaina", "centro"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 200.00,
+                    avaliacao_media: 4.7,
+                    total_avaliacoes: 89,
+                    observacoes: "Evento beneficente com parte da renda destinada a instituições locais",
+                    usuarios: { nome_completo: "Prefeitura de Araguaína", email: "esportes@araguaina.to.gov.br" }
+                },
+                {
+                    id: 3,
+                    titulo: "Desafio Bravos",
+                    descricao: "Corrida desafiadora com obstáculos naturais e percurso de 10km. Para atletas que buscam superar seus limites.",
+                    tipo_evento: "corrida",
+                    localizacao: "Parque Cimba, Araguaína - TO",
+                    endereco_completo: "Parque Cimba, Setor Cimba, Araguaína - TO",
+                    data_inicio: "2025-05-25T06:00:00-03:00",
+                    data_fim: "2025-05-25T11:00:00-03:00",
+                    horario_largada: "07:00:00",
+                    ponto_encontro: "Entrada do Parque Cimba",
+                    preco_inscricao: 50.00,
+                    capacidade_maxima: 200,
+                    participantes_atuais: 87,
+                    telefone_organizador: "(63) 99777-9012",
+                    email_organizador: "desafio@bravos.com",
+                    url_imagem: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "desafio", "obstaculos", "10km", "bravos"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 300.00,
+                    avaliacao_media: 4.8,
+                    total_avaliacoes: 34,
+                    observacoes: "Recomendado para atletas experientes. Inclui seguro e assistência médica",
+                    usuarios: { nome_completo: "Equipe Bravos", email: "contato@bravos.com" }
+                },
+                {
+                    id: 4,
+                    titulo: "Corrida de Aniversário da Comandante Nildinha",
+                    descricao: "Evento especial em comemoração ao aniversário da Comandante Nildinha, grande incentivadora do esporte local.",
+                    tipo_evento: "corrida",
+                    localizacao: "Araguaína - TO",
+                    endereco_completo: "A definir - Araguaína - TO",
+                    data_inicio: "2025-06-01T06:00:00-03:00",
+                    data_fim: "2025-06-01T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "A definir",
+                    preco_inscricao: 30.00,
+                    capacidade_maxima: 250,
+                    participantes_atuais: 45,
+                    telefone_organizador: "(63) 99666-3456",
+                    email_organizador: "nildinha@corrida.com",
+                    url_imagem: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "aniversario", "nildinha", "comemoracao"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 180.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 12,
+                    observacoes: "Evento comemorativo com festa pós-corrida",
+                    usuarios: { nome_completo: "Comandante Nildinha", email: "nildinha@corrida.com" }
+                },
+                {
+                    id: 5,
+                    titulo: "Stive's Race - 5ª Edição - Etapa Palmas",
+                    descricao: "Quinta edição da tradicional Stive's Race, etapa Palmas. Corrida técnica com percursos desafiadores.",
+                    tipo_evento: "corrida",
+                    localizacao: "Palmas - TO",
+                    endereco_completo: "Parque Cesamar, Palmas - TO",
+                    data_inicio: "2025-06-08T06:00:00-03:00",
+                    data_fim: "2025-06-08T11:00:00-03:00",
+                    horario_largada: "07:00:00",
+                    ponto_encontro: "Parque Cesamar",
+                    preco_inscricao: 60.00,
+                    capacidade_maxima: 500,
+                    participantes_atuais: 234,
+                    telefone_organizador: "(63) 99555-7890",
+                    email_organizador: "stivesrace@palmas.com",
+                    url_imagem: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "stives", "palmas", "5edicao"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 350.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 156,
+                    observacoes: "Evento tradicional com premiação especial",
+                    usuarios: { nome_completo: "Organização Stive's Race", email: "contato@stivesrace.com" }
+                },
+                {
+                    id: 6,
+                    titulo: "Corrida do SESC",
+                    descricao: "Corrida promovida pelo SESC Araguaína com foco na promoção da saúde e bem-estar da comunidade.",
+                    tipo_evento: "corrida",
+                    localizacao: "SESC Araguaína - TO",
+                    endereco_completo: "SESC Araguaína, Setor Couto Magalhães, Araguaína - TO",
+                    data_inicio: "2025-06-22T06:00:00-03:00",
+                    data_fim: "2025-06-22T10:00:00-03:00",
+                    horario_largada: "06:30:00",
+                    ponto_encontro: "SESC Araguaína",
+                    preco_inscricao: 25.00,
+                    capacidade_maxima: 300,
+                    participantes_atuais: 167,
+                    telefone_organizador: "(63) 99444-2345",
+                    email_organizador: "corrida@sesc-to.com.br",
+                    url_imagem: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["corrida", "sesc", "saude", "bem-estar"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 150.00,
+                    avaliacao_media: 4.6,
+                    total_avaliacoes: 78,
+                    observacoes: "Inclui avaliação física gratuita e café da manhã",
+                    usuarios: { nome_completo: "SESC Araguaína", email: "araguaina@sesc-to.com.br" }
+                }
+            ];
+                    tags: ["ciclismo", "jalapão", "aventura", "dunas", "natureza"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 300.00,
+                    avaliacao_media: 4.9,
+                    total_avaliacoes: 23,
+                    observacoes: "Necessário levar bike própria. Capacete obrigatório.",
+                    usuarios: { nome_completo: "Maria Santos", email: "maria@jalapao.com" }
+                },
+                {
+                    id: 3,
+                    titulo: "Travessia do Rio Tocantins",
+                    descricao: "Competição de natação em águas abertas. Percurso de 2km atravessando o Rio Tocantins.",
+                    tipo_evento: "natacao",
+                    localizacao: "Praia da Graciosa, Palmas - TO",
+                    endereco_completo: "Praia da Graciosa, Orla de Palmas - TO",
+                    data_inicio: "2024-04-05T16:00:00-03:00",
+                    data_fim: "2024-04-05T18:00:00-03:00",
+                    horario_largada: "16:30:00",
+                    ponto_encontro: "Deck da Praia da Graciosa",
+                    preco_inscricao: 50.00,
+                    capacidade_maxima: 100,
+                    participantes_atuais: 67,
+                    telefone_organizador: "(63) 99777-9012",
+                    email_organizador: "travessia@tocantins.com",
+                    url_imagem: "https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    tags: ["natação", "rio tocantins", "águas abertas", "competição"],
+                    permite_fotografos: true,
+                    preco_cobertura_fotografica: 250.00,
+                    avaliacao_media: 4.7,
+                    total_avaliacoes: 31,
+                    observacoes: "Obrigatório apresentar atestado médico",
+                    usuarios: { nome_completo: "Carlos Lima", email: "carlos@natacao.com" }
+                }
+            ];
+
+            allEvents = exampleEvents;
+            updateStats();
+            loadCategories();
+            applyFiltersAndDisplay();
+        }
+
+        // Carregar categorias
+        function loadCategories() {
+            const defaultCategories = [
+                { nome: 'Todos', icone: 'bi-grid', cor: '#6c757d' },
+                { nome: 'Corrida', icone: 'bi-person-running', cor: '#e74c3c' },
+                { nome: 'Ciclismo', icone: 'bi-bicycle', cor: '#3498db' },
+                { nome: 'Natação', icone: 'bi-water', cor: '#1abc9c' },
+                { nome: 'Caminhada', icone: 'bi-tree', cor: '#27ae60' },
+                { nome: 'Aventura', icone: 'bi-mountain', cor: '#f39c12' },
+                { nome: 'Família', icone: 'bi-people', cor: '#9b59b6' }
+            ];
+
+            const categoryFilter = document.getElementById('categoryFilter');
+            categoryFilter.innerHTML = '';
+
+            defaultCategories.forEach((category, index) => {
+                const categoryBtn = document.createElement('button');
+                categoryBtn.className = `category-btn ${index === 0 ? 'active' : ''}`;
+                categoryBtn.innerHTML = `<i class="${category.icone}"></i>${category.nome}`;
+                categoryBtn.onclick = () => filterByCategory(category.nome === 'Todos' ? '' : category.nome.toLowerCase());
+                categoryFilter.appendChild(categoryBtn);
+            });
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            document.getElementById('totalEvents').textContent = allEvents.length;
+            
+            const totalParticipants = allEvents.reduce((sum, event) => sum + (event.participantes_atuais || 0), 0);
+            document.getElementById('totalParticipants').textContent = totalParticipants;
+            
+            const photographersCount = allEvents.filter(event => event.permite_fotografos).length;
+            document.getElementById('totalPhotographers').textContent = photographersCount;
+        }
+
+        // Aplicar filtros e exibir
+        function applyFiltersAndDisplay() {
+            let filteredEvents = [...allEvents];
+
+            // Aplicar filtro de categoria
+            if (currentFilter) {
+                filteredEvents = filteredEvents.filter(event => event.tipo_evento === currentFilter);
+            }
+
+            // Aplicar busca
+            if (currentSearch) {
+                filteredEvents = filteredEvents.filter(event => 
+                    event.titulo.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    event.descricao.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    event.localizacao.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    event.tipo_evento.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    event.tags?.some(tag => tag.toLowerCase().includes(currentSearch.toLowerCase()))
+                );
+            }
+
+            // Aplicar ordenação
+            switch (currentSort) {
+                case 'date_desc':
+                    filteredEvents.sort((a, b) => new Date(b.data_inicio) - new Date(a.data_inicio));
+                    break;
+                case 'price_asc':
+                    filteredEvents.sort((a, b) => a.preco_inscricao - b.preco_inscricao);
+                    break;
+                case 'price_desc':
+                    filteredEvents.sort((a, b) => b.preco_inscricao - a.preco_inscricao);
+                    break;
+                case 'rating':
+                    filteredEvents.sort((a, b) => (b.avaliacao_media || 0) - (a.avaliacao_media || 0));
+                    break;
+                case 'participants':
+                    filteredEvents.sort((a, b) => (b.participantes_atuais || 0) - (a.participantes_atuais || 0));
+                    break;
+                default: // date_asc
+                    filteredEvents.sort((a, b) => new Date(a.data_inicio) - new Date(b.data_inicio));
+            }
+
+            displayedEvents = filteredEvents;
+            currentPage = 0;
+            displayEvents();
+        }
+
+        // Exibir eventos
+        function displayEvents() {
+            const grid = document.getElementById('eventsGrid');
+            const startIndex = currentPage * eventsPerPage;
+            const endIndex = startIndex + eventsPerPage;
+            const eventsToShow = displayedEvents.slice(0, endIndex);
+
+            if (currentPage === 0) {
+                grid.innerHTML = '';
+            }
+
+            eventsToShow.slice(startIndex).forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'col-lg-4 col-md-6';
+                
+                const eventDate = new Date(event.data_inicio);
+                const formattedDate = eventDate.toLocaleDateString('pt-BR');
+                const formattedTime = event.horario_largada || eventDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                const capacityPercentage = event.capacidade_maxima ? 
+                    Math.round((event.participantes_atuais / event.capacidade_maxima) * 100) : 0;
+                
+                const stars = generateStars(event.avaliacao_media || 0);
+                
+                eventCard.innerHTML = `
+                    <div class="event-card">
+                        <div class="position-relative">
+                            <img src="${event.url_imagem}" alt="${event.titulo}" class="event-image">
+                            <div class="event-badge">${event.tipo_evento}</div>
+                            <div class="event-price">R$ ${event.preco_inscricao?.toFixed(2)}</div>
+                        </div>
+                        <div class="event-content">
+                            <h5 class="event-title">${event.titulo}</h5>
+                            <p class="event-description">${event.descricao?.substring(0, 120)}...</p>
+                            
+                            <div class="event-meta">
+                                <div class="event-meta-item">
+                                    <i class="bi bi-calendar"></i>
+                                    <span>${formattedDate}</span>
+                                </div>
+                                <div class="event-meta-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span>${formattedTime}</span>
+                                </div>
+                                <div class="event-meta-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>${event.localizacao}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-tags">
+                                ${event.tags?.slice(0, 3).map(tag => `<span class="event-tag">#${tag}</span>`).join('') || ''}
+                            </div>
+                            
+                            <div class="event-footer">
+                                <div class="event-capacity">
+                                    <span>${event.participantes_atuais}/${event.capacidade_maxima}</span>
+                                    <div class="capacity-bar">
+                                        <div class="capacity-fill" style="width: ${capacityPercentage}%"></div>
+                                    </div>
+                                </div>
+                                <div class="event-rating">
+                                    ${stars}
+                                    <span>(${event.total_avaliacoes || 0})</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary flex-grow-1" onclick="viewEvent(${event.id})">
+                                    <i class="bi bi-eye me-1"></i>Ver Detalhes
+                                </button>
+                                <button class="btn whatsapp-btn" onclick="contactOrganizerDirect('${event.telefone_organizador}', '${event.titulo}')">
+                                    <i class="bi bi-whatsapp"></i>
+                                </button>
+                            </div>
+                            
+                            ${event.permite_fotografos ? `
+                                <div class="photographer-offer mt-2">
+                                    <small><i class="bi bi-camera me-1"></i>Cobertura fotográfica disponível por R$ ${event.preco_cobertura_fotografica?.toFixed(2)}</small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(eventCard);
+            });
+
+            // Controlar botão "Carregar Mais"
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (endIndex >= displayedEvents.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+        // Gerar estrelas de avaliação
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="bi bi-star-fill"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="bi bi-star-half"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="bi bi-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Ver detalhes do evento
+        function viewEvent(eventId) {
+            currentEvent = allEvents.find(e => e.id === eventId);
+            if (!currentEvent) return;
+
+            // Preencher modal
+            document.getElementById('modalEventTitle').textContent = currentEvent.titulo;
+            document.getElementById('modalEventImage').src = currentEvent.url_imagem;
+            document.getElementById('modalEventDescription').textContent = currentEvent.descricao;
+            
+            const eventDate = new Date(currentEvent.data_inicio);
+            document.getElementById('modalEventDate').textContent = eventDate.toLocaleDateString('pt-BR');
+            document.getElementById('modalEventTime').textContent = currentEvent.horario_largada || eventDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('modalEventLocation').textContent = currentEvent.localizacao;
+            document.getElementById('modalEventCapacity').textContent = `${currentEvent.participantes_atuais}/${currentEvent.capacidade_maxima}`;
+            document.getElementById('modalEventRating').textContent = `${currentEvent.avaliacao_media?.toFixed(1) || 'N/A'} (${currentEvent.total_avaliacoes || 0} avaliações)`;
+            document.getElementById('modalEventCategory').textContent = currentEvent.tipo_evento;
+            document.getElementById('modalEventMeetingPoint').textContent = currentEvent.ponto_encontro;
+            document.getElementById('modalEventPrice').textContent = `R$ ${currentEvent.preco_inscricao?.toFixed(2)}`;
+            document.getElementById('modalOrganizerName').textContent = currentEvent.usuarios?.nome_completo || 'Organizador';
+            
+            // Progress bar
+            const capacityPercentage = currentEvent.capacidade_maxima ? 
+                Math.round((currentEvent.participantes_atuais / currentEvent.capacidade_maxima) * 100) : 0;
+            document.getElementById('modalProgressBar').style.width = `${capacityPercentage}%`;
+            document.getElementById('modalCurrentParticipants').textContent = currentEvent.participantes_atuais;
+            document.getElementById('modalMaxCapacity').textContent = currentEvent.capacidade_maxima;
+            
+            // Tags
+            const tagsContainer = document.getElementById('modalEventTags');
+            tagsContainer.innerHTML = '';
+            if (currentEvent.tags) {
+                currentEvent.tags.forEach(tag => {
+                    const tagBadge = document.createElement('span');
+                    tagBadge.className = 'event-tag me-1 mb-1';
+                    tagBadge.textContent = `#${tag}`;
+                    tagsContainer.appendChild(tagBadge);
+                });
+            }
+            
+            // Cobertura fotográfica
+            const photographerSection = document.getElementById('modalEventPhotographer');
+            if (currentEvent.permite_fotografos && currentEvent.preco_cobertura_fotografica) {
+                photographerSection.style.display = 'block';
+                document.getElementById('modalPhotographyPrice').textContent = currentEvent.preco_cobertura_fotografica.toFixed(2);
+            } else {
+                photographerSection.style.display = 'none';
+            }
+
+            new bootstrap.Modal(document.getElementById('eventModal')).show();
+        }
+
+        // Filtrar por categoria
+        function filterByCategory(category) {
+            // Atualizar botões ativos
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            currentFilter = category;
+            applyFiltersAndDisplay();
+        }
+
+        // Buscar eventos
+        function searchEvents() {
+            currentSearch = document.getElementById('searchInput').value;
+            applyFiltersAndDisplay();
+        }
+
+        // Ordenar eventos
+        function sortEvents() {
+            currentSort = document.getElementById('sortSelect').value;
+            applyFiltersAndDisplay();
+        }
+
+        // Carregar mais eventos
+        function loadMoreEvents() {
+            currentPage++;
+            displayEvents();
+        }
+
+        // Contatar organizador diretamente
+        function contactOrganizerDirect(phone, eventTitle) {
+            const message = `Olá! Tenho interesse no evento "${eventTitle}" divulgado no Fotos63. Poderia me dar mais informações?`;
+            const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Contatar organizador (do modal)
+        function contactOrganizer() {
+            if (!currentEvent) return;
+            contactOrganizerDirect(currentEvent.telefone_organizador, currentEvent.titulo);
+        }
+
+        // Inscrever-se no evento
+        function registerForEvent() {
+            alert('Para se inscrever no evento, você precisa fazer login ou criar uma conta.');
+            // Aqui seria implementada a lógica de inscrição
+        }
+
+        // Oferecer fotografia
+        function offerPhotography() {
+            alert('Para oferecer serviços de fotografia, você precisa ser um fotógrafo cadastrado.');
+            // Aqui seria implementada a lógica de oferta fotográfica
+        }
+
+        // Mostrar formulário de criação de evento
+        function showCreateEvent() {
+            alert('Em breve você poderá criar seus próprios eventos!');
+            // Aqui seria implementado o formulário de criação
+        }
+
+        // Mostrar login
+        function showLogin() {
+            alert('Sistema de login será implementado em breve!');
+        }
+
+        // Mostrar registro
+        function showRegister() {
+            alert('Sistema de cadastro será implementado em breve!');
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadEvents();
+            
+            // Busca ao pressionar Enter
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchEvents();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
