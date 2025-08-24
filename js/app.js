@@ -3,9 +3,10 @@
 (function() {
     'use strict';
 
-    // Initialize Supabase
-    const SUPABASE_URL = 'https://weckkxjlqeulwpznauj.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlY2treGpscWV1bHdwem5hdWoiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1NTg2NjA2OSwiZXhwIjoyMDcxNDQyMDY5fQ.4G7m0effx4xhHZ_Ipatp3W3zJlvi2vlKNaKzpmxmg6A';
+    // Initialize Supabase - Mock configuration for development
+    // Note: Replace with actual Supabase credentials when available
+    const SUPABASE_URL = 'https://placeholder.supabase.co';
+    const SUPABASE_KEY = 'placeholder-key';
     
     let supabaseClient = null;
     
@@ -260,18 +261,18 @@
                 throw new Error('Por favor, preencha todos os campos obrigatórios');
             }
 
-            // Save to Supabase
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient
-                    .from('photographers')
-                    .insert([formData]);
-                
-                if (error) {
-                    throw new Error(error.message);
-                }
-                
-                console.log('✅ Photographer registered:', data);
-            }
+            // Save to Supabase (Mock implementation for development)
+            // TODO: Replace with actual Supabase connection when available
+            console.log('📋 Mock registration data:', formData);
+            
+            // Simulate successful registration
+            const mockResponse = {
+                id: 'mock-id-' + Date.now(),
+                ...formData,
+                created_at: new Date().toISOString()
+            };
+            
+            console.log('✅ Mock photographer registered:', mockResponse);
             
             // Show success message
             alertDiv.className = 'alert alert-success';
@@ -333,18 +334,18 @@
                 throw new Error('Por favor, preencha todos os campos obrigatórios');
             }
 
-            // Save to Supabase
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient
-                    .from('contact_messages')
-                    .insert([formData]);
-                
-                if (error) {
-                    throw new Error(error.message);
-                }
-                
-                console.log('✅ Message sent:', data);
-            }
+            // Save to Supabase (Mock implementation for development)
+            // TODO: Replace with actual Supabase connection when available
+            console.log('📩 Mock contact data:', formData);
+            
+            // Simulate successful message sending
+            const mockResponse = {
+                id: 'mock-contact-' + Date.now(),
+                ...formData,
+                created_at: new Date().toISOString()
+            };
+            
+            console.log('✅ Mock message sent:', mockResponse);
             
             // Show success message
             alertDiv.className = 'alert alert-success';
@@ -427,11 +428,31 @@
 
     // Global functions for button clicks
     window.buyPhoto = function(photoId) {
-        alert(`Função de compra será implementada. Foto ID: ${photoId}`);
+        // Redirect to checkout page with photo ID
+        if (confirm('Deseja prosseguir para a compra desta foto?')) {
+            window.location.href = `src/pages/checkout.html?photo=${photoId}`;
+        }
     };
 
     window.viewEvent = function(eventId) {
-        alert(`Visualização do evento será implementada. Event ID: ${eventId}`);
+        // Show event details or redirect to gallery filtered by event
+        if (confirm('Deseja visualizar as fotos deste evento?')) {
+            showSection('gallery');
+            // Could add event filtering here
+        }
+    };
+    
+    // Additional utility functions
+    window.goToLogin = function() {
+        window.location.href = 'src/pages/auth.html';
+    };
+    
+    window.goToDashboard = function() {
+        window.location.href = 'src/pages/dashboard.html';
+    };
+    
+    window.goToSupport = function() {
+        window.location.href = 'src/pages/suporte.html';
     };
 
 })();
