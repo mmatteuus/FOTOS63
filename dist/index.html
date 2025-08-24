@@ -97,13 +97,23 @@
             font-weight: 600;
         }
 
-        /* Hero Section */
+        /* Hero Section - Versão Melhorada */
         .hero {
-            background: var(--gradient-light);
-            padding: 6rem 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 215, 0, 0.9) 0%, 
+                rgba(255, 140, 0, 0.9) 50%, 
+                rgba(255, 99, 71, 0.9) 100%),
+                url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 8rem 0;
             text-align: center;
             position: relative;
             overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
 
         .hero::before {
@@ -113,30 +123,115 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('https://cdn.abacus.ai/images/59417acd-6078-4d6b-b3f0-d287518ff6a4.png');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
             z-index: 1;
         }
 
         .hero-content {
             position: relative;
             z-index: 2;
+            animation: fadeInUp 1.2s ease-out;
         }
 
         .hero h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--dark-gray);
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        .hero-subtitle {
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--white);
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .hero p {
-            font-size: 1.5rem;
-            color: var(--medium-gray);
-            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            color: var(--white);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            margin-top: 2rem;
+        }
+
+        .hero-buttons .btn {
+            margin: 0.5rem 1rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .hero-buttons .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Animações melhoradas */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            font-size: 3rem;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            font-size: 2.5rem;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            font-size: 2rem;
+            animation-delay: 4s;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
         }
 
         /* Botões Personalizados */
@@ -351,9 +446,14 @@
                             <i class="bi bi-people me-1"></i>Usuários
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-none" id="dashboardNavItem">
                         <a class="nav-link" href="#dashboard" onclick="showSection('dashboard')">
                             <i class="bi bi-graph-up me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item d-none" id="adminNavItem">
+                        <a class="nav-link" href="admin-panel.html" target="_blank">
+                            <i class="bi bi-gear-fill me-1"></i>Admin
                         </a>
                     </li>
                 </ul>
@@ -389,14 +489,24 @@
     <section id="inicio" class="page-section">
         <!-- Hero -->
         <div class="hero">
+            <!-- Elementos flutuantes -->
+            <div class="hero-floating-elements">
+                <i class="bi bi-camera-fill floating-icon"></i>
+                <i class="bi bi-heart-fill floating-icon"></i>
+                <i class="bi bi-star-fill floating-icon"></i>
+            </div>
+            
             <div class="container hero-content">
-                <h1 class="fade-in">FOTOS63</h1>
-                <p class="fade-in">Marketplace de Fotos Profissionais do Tocantins</p>
-                <div class="fade-in">
-                    <button class="btn btn-primary-custom me-3" onclick="showSection('galeria')">
-                        <i class="bi bi-images me-2"></i>Ver Galeria
+                <h1>FOTOS63</h1>
+                <div class="hero-subtitle">Tocantins em Foco</div>
+                <p>Descubra momentos únicos capturados pelos melhores fotógrafos do Tocantins. 
+                Conecte-se com profissionais talentosos e encontre a foto perfeita para cada ocasião.</p>
+                
+                <div class="hero-buttons">
+                    <button class="btn btn-light btn-lg" onclick="showSection('galeria')">
+                        <i class="bi bi-images me-2"></i>Explorar Galeria
                     </button>
-                    <button class="btn btn-secondary-custom" onclick="showRegisterModal()">
+                    <button class="btn btn-outline-light btn-lg" onclick="showRegisterModal()">
                         <i class="bi bi-camera me-2"></i>Seja um Fotógrafo
                     </button>
                 </div>
@@ -674,6 +784,10 @@
             <hr class="my-4">
             <div class="text-center">
                 <p>&copy; 2024 FOTOS63. Todos os direitos reservados.</p>
+                <p class="text-muted small mt-2">
+                    <i class="bi bi-code-slash me-1"></i>
+                    Desenvolvido por <strong class="text-warning">MtsFerreira</strong>
+                </p>
             </div>
         </div>
     </footer>
@@ -898,6 +1012,7 @@
 
         async function handleRegister(e) {
             e.preventDefault();
+            console.log('Register attempt started');
             
             const formData = {
                 name: document.getElementById('registerName').value,
@@ -905,12 +1020,34 @@
                 password: document.getElementById('registerPassword').value,
                 phone: document.getElementById('registerPhone').value,
                 role: document.getElementById('registerRole').value,
-                specialty: document.getElementById('registerSpecialty').value,
-                experience: document.getElementById('registerExperience').value
+                specialty: document.getElementById('registerSpecialty')?.value || '',
+                experience: document.getElementById('registerExperience')?.value || ''
             };
             
+            // Validação
+            if (!formData.name || !formData.email || !formData.password || !formData.role) {
+                showToast('Preencha todos os campos obrigatórios', 'warning');
+                return;
+            }
+            
+            if (formData.password.length < 6) {
+                showToast('A senha deve ter pelo menos 6 caracteres', 'warning');
+                return;
+            }
+            
+            if (!supabaseClient) {
+                showToast('Erro: Sistema não inicializado. Recarregue a página.', 'error');
+                return;
+            }
+            
             try {
-                const { data, error } = await supabase.auth.signUp({
+                console.log('Attempting signup with:', { 
+                    email: formData.email, 
+                    role: formData.role 
+                });
+                
+                // Sign up with Supabase Auth
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: formData.email,
                     password: formData.password,
                     options: {
@@ -924,18 +1061,40 @@
                     }
                 });
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase signup error:', error);
+                    throw error;
+                }
+                
+                console.log('Signup successful:', data);
                 
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-                modal.hide();
+                if (modal) modal.hide();
+                
+                // Clear form
+                document.getElementById('registerForm').reset();
                 
                 // Show success message
-                showToast('Cadastro realizado com sucesso! Verifique seu email.', 'success');
+                showToast('Cadastro realizado com sucesso! Verifique seu email para confirmar sua conta.', 'success');
                 
             } catch (error) {
-                console.error('Erro no cadastro:', error);
-                showToast('Erro no cadastro: ' + error.message, 'error');
+                console.error('Erro completo no cadastro:', error);
+                let errorMessage = 'Erro no cadastro: ';
+                
+                if (error.message.includes('User already registered')) {
+                    errorMessage += 'Este email já está cadastrado. Tente fazer login.';
+                } else if (error.message.includes('Invalid email')) {
+                    errorMessage += 'Email inválido.';
+                } else if (error.message.includes('Password')) {
+                    errorMessage += 'Senha muito fraca. Use pelo menos 6 caracteres.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Erro de conexão. Verifique sua internet e tente novamente.';
+                } else {
+                    errorMessage += error.message || 'Erro desconhecido.';
+                }
+                
+                showToast(errorMessage, 'error');
             }
         }
 
@@ -945,9 +1104,19 @@
             document.getElementById('userMenu').classList.remove('d-none');
             document.getElementById('userEmail').textContent = currentUser.email;
             
-            // Show photographer-specific elements
-            if (currentUser.user_metadata?.role === 'fotografo') {
-                document.getElementById('createEventBtn').style.display = 'block';
+            const userRole = currentUser.user_metadata?.role;
+            
+            // Show dashboard for photographers and admin
+            if (userRole === 'fotografo' || userRole === 'admin') {
+                document.getElementById('dashboardNavItem').classList.remove('d-none');
+                if (document.getElementById('createEventBtn')) {
+                    document.getElementById('createEventBtn').style.display = 'block';
+                }
+            }
+            
+            // Show admin panel only for admin
+            if (userRole === 'admin') {
+                document.getElementById('adminNavItem').classList.remove('d-none');
             }
         }
 
